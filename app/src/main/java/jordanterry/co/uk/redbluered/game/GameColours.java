@@ -1,4 +1,4 @@
-package jordanterry.co.uk.redbluered;
+package jordanterry.co.uk.redbluered.game;
 
 import android.graphics.Color;
 

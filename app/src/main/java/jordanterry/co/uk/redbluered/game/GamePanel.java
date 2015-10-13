@@ -10,9 +10,12 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Toast;
 
-import jordanterry.co.uk.redbluered.GameColours;
+import javax.inject.Inject;
+
+import dagger.ObjectGraph;
 import jordanterry.co.uk.redbluered.models.Square;
 import jordanterry.co.uk.redbluered.models.Steps;
+import jordanterry.co.uk.redbluered.modules.GameObjectModule;
 
 /**
  * Created by jordanterry on 11/10/15.
@@ -21,13 +24,16 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
 
     public static final String TAG = GamePanel.class.getSimpleName();
 
-    private Square mBlueSquare;
-    private Square mRedSquare;
-    private Square mInstructionSquare;
+    private ObjectGraph mObjectGraph;
+
     private GameEnvironment mGameEnvironment;
 
-    private Steps mGameSteps;
-    private Steps mUserSteps;
+    @Inject Steps mGameSteps;
+    @Inject Steps mUserSteps;
+
+    @Inject Square mBlueSquare;
+    @Inject Square mRedSquare;
+    @Inject Square mInstructionSquare;
 
     public GamePanel(Context context) {
         super(context);
@@ -45,12 +51,12 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
     }
 
     private void init() {
+        mObjectGraph = ObjectGraph.create(GameObjectModule.class);
+        mObjectGraph.inject(this);
         getHolder().addCallback(this);
         setClickable(true);
         setOnTouchListener(this);
         mGameEnvironment = new GameEnvironment(this);
-        mGameSteps = new Steps();
-        mUserSteps = new Steps();
         mGameSteps.addStep(GameColours.RED);
     }
 
@@ -81,16 +87,26 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
     public void surfaceCreated(SurfaceHolder holder) {
         float squareWidth = getWidth() * .25f;
         float squareHalf = squareWidth * .5f;
-        float redX = (getWidth() * .25f) - squareHalf;
-        float redY = (getHeight() * .5f) - squareHalf;
-        float blueX = (getWidth() * .75f) - squareHalf;
-        float blueY = (getHeight() * .5f) - squareHalf;
-        float middleX = (getWidth() * .5f) - squareHalf;
-        float middleY = (getHeight() * .5f) - squareHalf;
-        mRedSquare = new Square(redX, redY, squareWidth, squareWidth, Color.RED);
-        mBlueSquare = new Square(blueX, blueY, squareWidth, squareWidth, Color.BLUE);
-        mInstructionSquare = new Square(middleX, middleY, squareWidth, squareWidth, Color.BLACK);
+
+        mRedSquare.setX((getWidth() * .25f) - squareHalf);
+        mRedSquare.setY((getHeight() * .5f) - squareHalf);
+        mRedSquare.setHeight(squareWidth);
+        mRedSquare.setWidth(squareWidth);
+        mRedSquare.setBackgroundColour(GameColours.RED);
+
+        mBlueSquare.setX((getWidth() * .75f) - squareHalf);
+        mBlueSquare.setY((getHeight() * .5f) - squareHalf);
+        mBlueSquare.setHeight(squareWidth);
+        mBlueSquare.setWidth(squareWidth);
+        mBlueSquare.setBackgroundColour(GameColours.BLUE);
+
+        mInstructionSquare.setX((getWidth() * .5f) - squareHalf);
+        mInstructionSquare.setY((getHeight() * .5f) - squareHalf);
+        mInstructionSquare.setHeight(squareWidth);
+        mInstructionSquare.setWidth(squareWidth);
+        mInstructionSquare.setBackgroundColour(Color.BLACK);
         mInstructionSquare.hide();
+
     }
 
     @Override

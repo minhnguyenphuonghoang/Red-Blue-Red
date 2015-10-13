@@ -20,12 +20,38 @@ public class Square {
 
     private boolean isHidden = false;
 
+
+    public Square() {
+        mBackgroundColour = new Paint();
+    }
+
     public Square(float x, float y, float width, float height, int colour) {
         mX = x;
         mY = y;
         mWidth = width;
         mHeight = height;
         mBackgroundColour = new Paint();
+        mBackgroundColour.setColor(colour);
+    }
+
+
+    public void setX(float x) {
+        mX = x;
+    }
+
+    public void setY(float y) {
+        mY = y;
+    }
+
+    public void setWidth(float width) {
+        mWidth = width;
+    }
+
+    public void setHeight(float height) {
+        mHeight = height;
+    }
+
+    public void setBackgroundColour(int colour) {
         mBackgroundColour.setColor(colour);
     }
 
