@@ -18,6 +18,8 @@ public class Square {
 
     private float mHeight;
 
+    private boolean isHidden = false;
+
     public Square(float x, float y, float width, float height, int colour) {
         mX = x;
         mY = y;
@@ -28,7 +30,21 @@ public class Square {
     }
 
     public void draw(Canvas canvas) {
-        canvas.drawRect(mX, mY, mX + mWidth, mY + mHeight, mBackgroundColour);
+        if(!isHidden) {
+            canvas.drawRect(mX, mY, mX + mWidth, mY + mHeight, mBackgroundColour);
+        }
+    }
+
+    public void hide() {
+        isHidden = true;
+    }
+
+    public void show() {
+        isHidden = false;
+    }
+
+    public boolean isTouch(float x, float y) {
+        return x > mX && x < mX + mWidth && y > mY && y < mY + mHeight;
     }
 
 
