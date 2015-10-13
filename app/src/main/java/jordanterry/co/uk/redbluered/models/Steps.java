@@ -25,11 +25,14 @@ public class Steps {
     }
 
     public boolean compareSteps(Steps compareSteps) {
+        if(compareSteps.getSteps().size() > 0 && mSteps.size() > 0) {
 
-        for (int i = 0; i < compareSteps.getSteps().size(); i++) {
-            if(mSteps.get(i).intValue() != compareSteps.getSteps().get(i).intValue()) {
-                return false;
+            for (int i = 0; i < compareSteps.getSteps().size(); i++) {
+                if (mSteps.get(i).intValue() != compareSteps.getSteps().get(i).intValue()) {
+                    return false;
+                }
             }
+
         }
         return true;
     }

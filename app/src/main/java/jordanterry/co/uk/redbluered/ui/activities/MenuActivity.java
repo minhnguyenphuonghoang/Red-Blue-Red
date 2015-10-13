@@ -1,4 +1,4 @@
-package jordanterry.co.uk.redbluered.ui;
+package jordanterry.co.uk.redbluered.ui.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

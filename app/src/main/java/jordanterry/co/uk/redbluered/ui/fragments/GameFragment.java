@@ -7,10 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import jordanterry.co.uk.redbluered.R;
 import jordanterry.co.uk.redbluered.game.GamePanel;
+import jordanterry.co.uk.redbluered.game.creators.DaggerGameCreator;
+import jordanterry.co.uk.redbluered.game.creators.GameCreator;
+import jordanterry.co.uk.redbluered.game.modules.GameObjectModule;
 
 /**
  * Created by jordanterry on 11/10/15.
@@ -19,7 +19,6 @@ public class GameFragment extends Fragment {
 
     public static final String TAG = GameFragment.class.getSimpleName();
 
-    @Bind(R.id.game)
     GamePanel mGame;
 
     public static GameFragment newInstance() {
@@ -33,10 +32,12 @@ public class GameFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_game, container, false);
-        ButterKnife.bind(this, view);
+        GameCreator gameCreator = DaggerGameCreator.builder()
+                .gameObjectModule(new GameObjectModule(getContext()))
+                .build();
+        mGame = gameCreator.provideGame();
         mGame.start();
-        return view;
+        return mGame;
     }
 
 

@@ -12,10 +12,8 @@ import android.widget.Toast;
 
 import javax.inject.Inject;
 
-import dagger.ObjectGraph;
 import jordanterry.co.uk.redbluered.models.Square;
 import jordanterry.co.uk.redbluered.models.Steps;
-import jordanterry.co.uk.redbluered.modules.GameObjectModule;
 
 /**
  * Created by jordanterry on 11/10/15.
@@ -24,7 +22,6 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
 
     public static final String TAG = GamePanel.class.getSimpleName();
 
-    private ObjectGraph mObjectGraph;
 
     private GameEnvironment mGameEnvironment;
 
@@ -35,6 +32,7 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
     @Inject Square mRedSquare;
     @Inject Square mInstructionSquare;
 
+    @Inject
     public GamePanel(Context context) {
         super(context);
         init();
@@ -51,13 +49,12 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
     }
 
     private void init() {
-        mObjectGraph = ObjectGraph.create(GameObjectModule.class);
-        mObjectGraph.inject(this);
         getHolder().addCallback(this);
         setClickable(true);
         setOnTouchListener(this);
+
+
         mGameEnvironment = new GameEnvironment(this);
-        mGameSteps.addStep(GameColours.RED);
     }
 
     public void start() {
@@ -125,19 +122,23 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
 
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
-
+                boolean isSquareTouched = false;
                 if(mBlueSquare.isTouch(motionEvent.getX(), motionEvent.getY())) {
                     mUserSteps.addStep(GameColours.BLUE);
+                    isSquareTouched = true;
                 }
 
                 if(mRedSquare.isTouch(motionEvent.getX(), motionEvent.getY())) {
                     mUserSteps.addStep(GameColours.RED);
+                    isSquareTouched = true;
                 }
 
-                if(mGameSteps.compareSteps(mUserSteps)) {
-                    Toast.makeText(getContext(), "Everything is fine..", Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(getContext(), "Everything is not fine..", Toast.LENGTH_LONG).show();
+                if(isSquareTouched) {
+                    if(mGameSteps.compareSteps(mUserSteps)) {
+                        Toast.makeText(getContext(), "Everything is fine..", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getContext(), "Everything is not fine..", Toast.LENGTH_LONG).show();
+                    }
                 }
 
                 break;

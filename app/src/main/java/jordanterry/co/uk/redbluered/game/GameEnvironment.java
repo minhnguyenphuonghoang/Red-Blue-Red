@@ -16,6 +16,7 @@ public class GameEnvironment extends Thread {
     private boolean isRunning = false;
     private boolean isGameEnded = false;
 
+
     public GameEnvironment(GamePanel gamePanel) {
         mGamePanel = gamePanel;
         mSurfaceHolder = gamePanel.getHolder();

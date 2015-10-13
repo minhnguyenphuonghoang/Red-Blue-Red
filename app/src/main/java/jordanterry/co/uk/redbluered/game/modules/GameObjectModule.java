@@ -1,18 +1,23 @@
-package jordanterry.co.uk.redbluered.modules;
+package jordanterry.co.uk.redbluered.game.modules;
+
+import android.content.Context;
 
 import dagger.Module;
 import dagger.Provides;
-import jordanterry.co.uk.redbluered.game.GamePanel;
 import jordanterry.co.uk.redbluered.models.Square;
 import jordanterry.co.uk.redbluered.models.Steps;
 
 /**
  * Module to provide dependencies to the GamePanel.
  */
-@Module(injects = {
-        GamePanel.class
-})
+@Module
 public class GameObjectModule {
+
+    private Context mContext;
+
+    public GameObjectModule(Context context) {
+        mContext = context;
+    }
 
     @Provides
     public Steps provideSteps() {
@@ -23,4 +28,10 @@ public class GameObjectModule {
     public Square provideSquare() {
         return new Square();
     }
+
+    @Provides
+    public Context provideContext() {
+        return mContext;
+    }
+
 }
