@@ -14,9 +14,8 @@ public class Square {
 
     private float mY;
 
-    private float mWidth;
 
-    private float mHeight;
+    private float mEdge;
 
     private boolean isHidden = false;
 
@@ -25,31 +24,25 @@ public class Square {
         mBackgroundColour = new Paint();
     }
 
-    public Square(float x, float y, float width, float height, int colour) {
+    public Square(float x, float y, float edge, int colour) {
         mX = x;
         mY = y;
-        mWidth = width;
-        mHeight = height;
+        mEdge = edge;
         mBackgroundColour = new Paint();
         mBackgroundColour.setColor(colour);
     }
 
 
-    public void setX(float x) {
-        mX = x;
-    }
 
-    public void setY(float y) {
+    public void setPosition(float x, float y) {
+        mX = x;
         mY = y;
     }
 
-    public void setWidth(float width) {
-        mWidth = width;
+    public void setEdge(float edge) {
+        mEdge = edge;
     }
 
-    public void setHeight(float height) {
-        mHeight = height;
-    }
 
     public void setBackgroundColour(int colour) {
         mBackgroundColour.setColor(colour);
@@ -57,7 +50,7 @@ public class Square {
 
     public void draw(Canvas canvas) {
         if(!isHidden) {
-            canvas.drawRect(mX, mY, mX + mWidth, mY + mHeight, mBackgroundColour);
+            canvas.drawRect(mX, mY, mX + mEdge, mY + mEdge, mBackgroundColour);
         }
     }
 
@@ -70,7 +63,7 @@ public class Square {
     }
 
     public boolean isTouch(float x, float y) {
-        return x > mX && x < mX + mWidth && y > mY && y < mY + mHeight;
+        return x > mX && x < mX + mEdge && y > mY && y < mY + mEdge;
     }
 
 

@@ -85,22 +85,16 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
         float squareWidth = getWidth() * .25f;
         float squareHalf = squareWidth * .5f;
 
-        mRedSquare.setX((getWidth() * .25f) - squareHalf);
-        mRedSquare.setY((getHeight() * .5f) - squareHalf);
-        mRedSquare.setHeight(squareWidth);
-        mRedSquare.setWidth(squareWidth);
+        mRedSquare.setPosition((getWidth() * .25f) - squareHalf, (getHeight() * .5f) - squareHalf);
+        mRedSquare.setEdge(squareWidth);
         mRedSquare.setBackgroundColour(GameColours.RED);
 
-        mBlueSquare.setX((getWidth() * .75f) - squareHalf);
-        mBlueSquare.setY((getHeight() * .5f) - squareHalf);
-        mBlueSquare.setHeight(squareWidth);
-        mBlueSquare.setWidth(squareWidth);
+        mBlueSquare.setPosition((getWidth() * .75f) - squareHalf, (getHeight() * .5f) - squareHalf);
+        mBlueSquare.setEdge(squareWidth);
         mBlueSquare.setBackgroundColour(GameColours.BLUE);
 
-        mInstructionSquare.setX((getWidth() * .5f) - squareHalf);
-        mInstructionSquare.setY((getHeight() * .5f) - squareHalf);
-        mInstructionSquare.setHeight(squareWidth);
-        mInstructionSquare.setWidth(squareWidth);
+        mInstructionSquare.setPosition((getWidth() * .5f) - squareHalf, (getHeight() * .5f) - squareHalf);
+        mInstructionSquare.setEdge(squareWidth);
         mInstructionSquare.setBackgroundColour(Color.BLACK);
         mInstructionSquare.hide();
 
