@@ -9,5 +9,5 @@ import dagger.Component;
         modules = ApplicationModule.class
 )
 public interface ApplicationComponent {
-    RedBlueRed injectApplication(RedBlueRed redBlueRed);
+    RBRApplication injectApplication(RBRApplication redBlueRed);
 }

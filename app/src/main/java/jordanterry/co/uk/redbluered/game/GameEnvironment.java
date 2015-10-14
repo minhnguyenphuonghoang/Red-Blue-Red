@@ -34,7 +34,7 @@ public class GameEnvironment extends Thread {
     }
 
     @Override
-    public void run(){
+    public void run() {
         Canvas c;
         long beginTime, timeDiff;
         int sleepTime, framesSkipped;

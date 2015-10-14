@@ -7,10 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import jordanterry.co.uk.redbluered.game.GamePanel;
-import jordanterry.co.uk.redbluered.game.creators.DaggerGameCreator;
-import jordanterry.co.uk.redbluered.game.creators.GameCreator;
-import jordanterry.co.uk.redbluered.game.modules.GameObjectModule;
+import jordanterry.co.uk.redbluered.game.GameController;
 
 /**
  * Created by jordanterry on 11/10/15.
@@ -19,7 +16,7 @@ public class GameFragment extends Fragment {
 
     public static final String TAG = GameFragment.class.getSimpleName();
 
-    GamePanel mGame;
+    private GameController mGameController;
 
     public static GameFragment newInstance() {
         GameFragment fragment = new GameFragment();
@@ -32,12 +29,9 @@ public class GameFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        GameCreator gameCreator = DaggerGameCreator.builder()
-                .gameObjectModule(new GameObjectModule(getContext()))
-                .build();
-        mGame = gameCreator.provideGame();
-        mGame.start();
-        return mGame;
+        mGameController = new GameController(getContext());
+        mGameController.start();
+        return mGameController.getGamePanel();
     }
 
 
@@ -46,7 +40,7 @@ public class GameFragment extends Fragment {
     public void onStop() {
         super.onStop();
         try {
-            mGame.stop();
+            mGameController.stop();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

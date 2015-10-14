@@ -3,17 +3,12 @@ package jordanterry.co.uk.redbluered.game;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.widget.Toast;
-
-import javax.inject.Inject;
 
 import jordanterry.co.uk.redbluered.models.Square;
-import jordanterry.co.uk.redbluered.models.Steps;
 
 /**
  * Created by jordanterry on 11/10/15.
@@ -25,36 +20,32 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
 
     private GameEnvironment mGameEnvironment;
 
-    @Inject Steps mGameSteps;
-    @Inject Steps mUserSteps;
+    public interface OnGameInteraction {
+        void newStep(int colour);
+        void onTouch(int colour);
+    }
 
-    @Inject Square mBlueSquare;
-    @Inject Square mRedSquare;
-    @Inject Square mInstructionSquare;
+    private OnGameInteraction mOnGameInteraction;
 
-    @Inject
-    public GamePanel(Context context) {
+    private Square mBlueSquare;
+    private Square mRedSquare;
+    private Square mInstructionSquare;
+
+    public GamePanel(Context context, OnGameInteraction onGameInteraction) {
         super(context);
         init();
-    }
+        mOnGameInteraction = onGameInteraction;
 
-    public GamePanel(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
-    }
-
-    public GamePanel(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init();
     }
 
     private void init() {
         getHolder().addCallback(this);
         setClickable(true);
         setOnTouchListener(this);
-
-
         mGameEnvironment = new GameEnvironment(this);
+        mBlueSquare = new Square();
+        mRedSquare = new Square();
+        mInstructionSquare = new Square();
     }
 
     public void start() {
@@ -116,23 +107,13 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
 
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                boolean isSquareTouched = false;
+
                 if(mBlueSquare.isTouch(motionEvent.getX(), motionEvent.getY())) {
-                    mUserSteps.addStep(GameColours.BLUE);
-                    isSquareTouched = true;
+                    mOnGameInteraction.onTouch(GameColours.BLUE);
                 }
 
                 if(mRedSquare.isTouch(motionEvent.getX(), motionEvent.getY())) {
-                    mUserSteps.addStep(GameColours.RED);
-                    isSquareTouched = true;
-                }
-
-                if(isSquareTouched) {
-                    if(mGameSteps.compareSteps(mUserSteps)) {
-                        Toast.makeText(getContext(), "Everything is fine..", Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(getContext(), "Everything is not fine..", Toast.LENGTH_LONG).show();
-                    }
+                    mOnGameInteraction.onTouch(GameColours.RED);
                 }
 
                 break;

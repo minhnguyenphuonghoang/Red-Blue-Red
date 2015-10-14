@@ -5,7 +5,7 @@ import android.app.Application;
 /**
  * Created by jordanterry on 13/10/15.
  */
-public class RedBlueRed extends Application {
+public class RBRApplication extends Application {
 
 
     private ApplicationComponent mComponent;
