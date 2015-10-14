@@ -8,9 +8,21 @@ import android.app.Application;
 public class RedBlueRed extends Application {
 
 
+    private ApplicationComponent mComponent;
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        mComponent = DaggerApplicationComponent.builder()
+                .applicationModule(new ApplicationModule(this))
+                .build();
+
+        mComponent.injectApplication(this);
+
+    }
+
+    public ApplicationComponent getComponent() {
+        return mComponent;
     }
 }
