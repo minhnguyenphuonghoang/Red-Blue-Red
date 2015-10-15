@@ -1,12 +1,15 @@
 package jordanterry.co.uk.redbluered.game;
 
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 /**
  * Created by jordanterry on 11/10/15.
  */
 public class GameEnvironment extends Thread {
+
+    public static final String TAG = GameEnvironment.class.getSimpleName();
 
     private final static int MAX_FRAME_SKIPS = 5;
     private final static int MAX_FPS = 50;
@@ -56,7 +59,7 @@ public class GameEnvironment extends Thread {
                     try {
                         sleep(sleepTime);
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        Log.e(TAG, e.getMessage());
                     }
                 }
                 while (sleepTime < 0 && framesSkipped < MAX_FRAME_SKIPS) {

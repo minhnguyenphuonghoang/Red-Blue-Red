@@ -6,12 +6,18 @@ import android.widget.Toast;
 import jordanterry.co.uk.redbluered.models.Steps;
 
 /**
- * Created by jordanterry on 14/10/15.
+ * The GameController class contains the Game.
  */
 public class GameController implements GamePanel.OnGameInteraction {
 
+    /**
+     * The current level
+     */
     private int mLevel;
 
+    /**
+     * The Context of the game
+     */
     private Context mContext;
 
     private Steps mGameSteps;
@@ -29,6 +35,10 @@ public class GameController implements GamePanel.OnGameInteraction {
 
     public int getLevel() {
         return mLevel;
+    }
+
+    public void incrementLevel() {
+        mLevel++;
     }
 
     public GamePanel getGamePanel() {
