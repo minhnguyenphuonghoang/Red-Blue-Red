@@ -1,4 +1,4 @@
-package jordanterry.co.uk.redbluered.models;
+package jordanterry.co.uk.redbluered.game.models;
 
 import java.util.ArrayList;
 

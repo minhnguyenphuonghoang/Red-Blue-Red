@@ -8,7 +8,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 
-import jordanterry.co.uk.redbluered.models.Square;
+import jordanterry.co.uk.redbluered.game.models.Square;
+
 
 /**
  * Created by jordanterry on 11/10/15.
@@ -35,7 +36,6 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
         super(context);
         init();
         mOnGameInteraction = onGameInteraction;
-
     }
 
     private void init() {

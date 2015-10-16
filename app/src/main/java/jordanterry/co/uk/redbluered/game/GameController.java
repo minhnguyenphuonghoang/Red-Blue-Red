@@ -3,7 +3,10 @@ package jordanterry.co.uk.redbluered.game;
 import android.content.Context;
 import android.widget.Toast;
 
-import jordanterry.co.uk.redbluered.models.Steps;
+import javax.inject.Inject;
+
+import jordanterry.co.uk.redbluered.game.models.Steps;
+
 
 /**
  * The GameController class contains the Game.
@@ -20,11 +23,12 @@ public class GameController implements GamePanel.OnGameInteraction {
      */
     private Context mContext;
 
-    private Steps mGameSteps;
-    private Steps mUserSteps;
+    @Inject Steps mGameSteps;
+    @Inject Steps mUserSteps;
 
     private GamePanel mGamePanel;
 
+    @Inject
     public GameController(Context context) {
         mContext = context;
         mLevel = 0;

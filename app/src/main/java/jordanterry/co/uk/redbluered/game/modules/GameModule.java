@@ -2,12 +2,14 @@ package jordanterry.co.uk.redbluered.game.modules;
 
 import android.content.Context;
 
-import jordanterry.co.uk.redbluered.models.Square;
+import dagger.Module;
+import dagger.Provides;
+import jordanterry.co.uk.redbluered.game.models.Steps;
 
 /**
  * Module to provide dependencies to the GamePanel.
  */
-// @Module
+@Module
 public class GameModule {
 
     private Context mContext;
@@ -17,14 +19,15 @@ public class GameModule {
         mContext = context;
     }
 
-   // @Provides
-    public Square provideSquare() {
-        return new Square();
+    @Provides
+    public Steps provideSteps() {
+        return new Steps();
     }
 
-    // @Provides
+    @Provides
     public Context provideContext() {
         return mContext;
     }
+
 
 }
