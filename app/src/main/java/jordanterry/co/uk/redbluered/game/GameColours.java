@@ -8,4 +8,12 @@ import android.graphics.Color;
 public class GameColours {
     public static final int RED = Color.RED;
     public static final int BLUE = Color.BLUE;
+
+    public static int randomColour() {
+        if(Math.random() < .5) {
+            return BLUE;
+        }
+        return RED;
+    }
+
 }

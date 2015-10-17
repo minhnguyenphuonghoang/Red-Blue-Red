@@ -9,6 +9,7 @@ import android.view.SurfaceView;
 import android.view.View;
 
 import jordanterry.co.uk.redbluered.game.models.Square;
+import jordanterry.co.uk.redbluered.game.models.Steps;
 
 
 /**
@@ -18,12 +19,11 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
 
     public static final String TAG = GamePanel.class.getSimpleName();
 
-
     private GameEnvironment mGameEnvironment;
+    private boolean isAddStep = false;
 
     public interface OnGameInteraction {
-        void newStep(int colour);
-        void onTouch(int colour);
+        void onGameOver();
     }
 
     private OnGameInteraction mOnGameInteraction;
@@ -31,6 +31,10 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
     private Square mBlueSquare;
     private Square mRedSquare;
     private Square mInstructionSquare;
+    private Steps mGameColours;
+    private Steps mUserColours;
+
+    private int mLevel;
 
     public GamePanel(Context context, OnGameInteraction onGameInteraction) {
         super(context);
@@ -46,6 +50,12 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
         mBlueSquare = new Square();
         mRedSquare = new Square();
         mInstructionSquare = new Square();
+
+        mGameColours = new Steps();
+        mUserColours = new Steps();
+        mLevel = 0;
+        addStep();
+
     }
 
     public void start() {
@@ -58,8 +68,25 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
         mGameEnvironment.join();
     }
 
-    public void updateGame() {
+    public void showNewStep() {
+        isAddStep = true;
+    }
 
+    public void update() {
+        if(isAddStep && !mInstructionSquare.isVisible()) {
+            mInstructionSquare.show();
+            mRedSquare.hide();
+            mBlueSquare.hide();
+        } else if(!isAddStep && mInstructionSquare.isVisible()) {
+            mInstructionSquare.hide();
+            mRedSquare.show();
+            mBlueSquare.show();
+        }
+
+
+        if(isAddStep) {
+            mInstructionSquare.setBackgroundColour(mGameColours.getColour(0));
+        }
     }
 
     @Override
@@ -93,12 +120,12 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
 
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-
+        // Empty
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-
+        // Empty
     }
 
 
@@ -109,11 +136,11 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
             case MotionEvent.ACTION_DOWN:
 
                 if(mBlueSquare.isTouch(motionEvent.getX(), motionEvent.getY())) {
-                    mOnGameInteraction.onTouch(GameColours.BLUE);
+                    checkUserClick(GameColours.BLUE);
                 }
 
                 if(mRedSquare.isTouch(motionEvent.getX(), motionEvent.getY())) {
-                    mOnGameInteraction.onTouch(GameColours.RED);
+                    checkUserClick(GameColours.RED);
                 }
 
                 break;
@@ -121,5 +148,25 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
 
 
         return false;
+    }
+
+
+    private void checkUserClick(int colour) {
+        mUserColours.addStep(colour);
+        if (mGameColours.compareSteps(mUserColours)) {
+            addStep();
+        } else {
+            mOnGameInteraction.onGameOver();
+        }
+    }
+
+    private void addStep() {
+        mLevel++;
+        addNewColour();
+        showNewStep();
+    }
+
+    private void addNewColour() {
+        mGameColours.addStep(GameColours.randomColour());
     }
 }

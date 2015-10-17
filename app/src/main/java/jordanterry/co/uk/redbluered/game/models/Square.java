@@ -62,6 +62,10 @@ public class Square {
         isHidden = false;
     }
 
+    public boolean isVisible() {
+        return !isHidden;
+    }
+
     public boolean isTouch(float x, float y) {
         return x > mX && x < mX + mEdge && y > mY && y < mY + mEdge;
     }

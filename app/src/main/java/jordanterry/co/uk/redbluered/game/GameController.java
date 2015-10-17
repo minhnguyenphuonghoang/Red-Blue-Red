@@ -5,44 +5,24 @@ import android.widget.Toast;
 
 import javax.inject.Inject;
 
-import jordanterry.co.uk.redbluered.game.models.Steps;
-
 
 /**
  * The GameController class contains the Game.
  */
 public class GameController implements GamePanel.OnGameInteraction {
 
-    /**
-     * The current level
-     */
-    private int mLevel;
+    public static final String TAG = GameController.class.getSimpleName();
 
     /**
      * The Context of the game
      */
-    private Context mContext;
-
-    @Inject Steps mGameSteps;
-    @Inject Steps mUserSteps;
+    @Inject Context mContext;
 
     private GamePanel mGamePanel;
 
     @Inject
     public GameController(Context context) {
-        mContext = context;
-        mLevel = 0;
-        mGameSteps = new Steps();
-        mUserSteps = new Steps();
         mGamePanel = new GamePanel(context, this);
-    }
-
-    public int getLevel() {
-        return mLevel;
-    }
-
-    public void incrementLevel() {
-        mLevel++;
     }
 
     public GamePanel getGamePanel() {
@@ -58,17 +38,7 @@ public class GameController implements GamePanel.OnGameInteraction {
     }
 
     @Override
-    public void newStep(int colour) {
-        mGameSteps.addStep(colour);
-    }
-
-    @Override
-    public void onTouch(int colour) {
-        mUserSteps.addStep(colour);
-        if(mGameSteps.compareSteps(mUserSteps)) {
-            Toast.makeText(mContext, "Steps match", Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(mContext, "Game over", Toast.LENGTH_LONG).show();
-        }
+    public void onGameOver() {
+        Toast.makeText(mContext, "Game over", Toast.LENGTH_SHORT).show();
     }
 }

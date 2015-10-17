@@ -41,4 +41,9 @@ public class Steps {
     }
 
 
+    public int getColour(int position) {
+        return mSteps.get(position);
+    }
+
+
 }

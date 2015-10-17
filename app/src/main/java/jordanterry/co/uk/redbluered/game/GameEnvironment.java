@@ -46,7 +46,7 @@ public class GameEnvironment extends Thread {
                 beginTime = System.currentTimeMillis();
                 c = null;
                 framesSkipped = 0;
-                mGamePanel.updateGame();
+                mGamePanel.update();
                 c = mSurfaceHolder.lockCanvas(null);
                 synchronized (mSurfaceHolder){
                     if(c != null) {
@@ -63,7 +63,7 @@ public class GameEnvironment extends Thread {
                     }
                 }
                 while (sleepTime < 0 && framesSkipped < MAX_FRAME_SKIPS) {
-                    mGamePanel.updateGame();
+                    mGamePanel.update();
                     sleepTime += FRAME_PERIOD;
                     framesSkipped++;
                 }
