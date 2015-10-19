@@ -36,6 +36,12 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
 
     private int mLevel;
 
+    private long mChangeStepTime = 0;
+    private long mDisplayStep = 0;
+    private static final long STEP_DISPLAY_TIME = 1000;
+
+
+
     public GamePanel(Context context, OnGameInteraction onGameInteraction) {
         super(context);
         init();
@@ -68,10 +74,6 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
         mGameEnvironment.join();
     }
 
-    public void showNewStep() {
-        isAddStep = true;
-    }
-
     public void update() {
         if(isAddStep && !mInstructionSquare.isVisible()) {
             mInstructionSquare.show();
@@ -85,7 +87,19 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
 
 
         if(isAddStep) {
-            mInstructionSquare.setBackgroundColour(mGameColours.getColour(0));
+
+            for (int i = 0; i < mGameColours.getSteps().size(); i++) {
+
+                if(i == mDisplayStep && System.currentTimeMillis() < mChangeStepTime) {
+                    mInstructionSquare.setBackgroundColour(mGameColours.getColour(i));
+                } else if(i == mDisplayStep && System.currentTimeMillis() > mChangeStepTime) {
+                    mChangeStepTime = System.currentTimeMillis() + STEP_DISPLAY_TIME;
+                    mDisplayStep++;
+                } else if(i == mDisplayStep - 1 && i == mGameColours.getSteps().size() - 1 && mChangeStepTime < System.currentTimeMillis()) {
+                    isAddStep = false;
+                }
+            }
+
         }
     }
 
@@ -154,7 +168,9 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
     private void checkUserClick(int colour) {
         mUserColours.addStep(colour);
         if (mGameColours.compareSteps(mUserColours)) {
-            addStep();
+            if(mGameColours.getSteps().size() == mUserColours.getSteps().size()) {
+                addStep();
+            }
         } else {
             mOnGameInteraction.onGameOver();
         }
@@ -162,8 +178,15 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
 
     private void addStep() {
         mLevel++;
+        mUserColours = new Steps();
         addNewColour();
-        showNewStep();
+        displaySteps();
+    }
+
+    private void displaySteps() {
+        isAddStep = true;
+        mChangeStepTime = System.currentTimeMillis() + STEP_DISPLAY_TIME;
+        mDisplayStep = 0;
     }
 
     private void addNewColour() {

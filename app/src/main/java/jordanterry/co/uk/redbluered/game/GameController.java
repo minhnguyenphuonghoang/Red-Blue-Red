@@ -1,9 +1,11 @@
 package jordanterry.co.uk.redbluered.game;
 
 import android.content.Context;
-import android.widget.Toast;
+import android.content.Intent;
 
 import javax.inject.Inject;
+
+import jordanterry.co.uk.redbluered.ui.activities.MenuActivity;
 
 
 /**
@@ -39,6 +41,8 @@ public class GameController implements GamePanel.OnGameInteraction {
 
     @Override
     public void onGameOver() {
-        Toast.makeText(mContext, "Game over", Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(mContext, MenuActivity.class);
+        mContext.startActivity(intent);
     }
 }
