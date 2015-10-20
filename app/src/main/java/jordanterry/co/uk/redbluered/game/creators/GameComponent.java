@@ -1,7 +1,7 @@
 package jordanterry.co.uk.redbluered.game.creators;
 
 import dagger.Component;
-import jordanterry.co.uk.redbluered.game.GameController;
+import jordanterry.co.uk.redbluered.game.GameControllerImpl;
 import jordanterry.co.uk.redbluered.game.modules.GameModule;
 
 /**
@@ -9,5 +9,5 @@ import jordanterry.co.uk.redbluered.game.modules.GameModule;
  */
 @Component(modules = {GameModule.class})
 public interface GameComponent {
-    GameController provideGameController();
+    GameControllerImpl provideGameController();
 }

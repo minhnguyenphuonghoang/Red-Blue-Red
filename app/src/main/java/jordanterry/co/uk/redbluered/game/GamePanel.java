@@ -8,39 +8,27 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 
-import jordanterry.co.uk.redbluered.game.models.Square;
-import jordanterry.co.uk.redbluered.game.models.Steps;
-
+import jordanterry.co.uk.redbluered.game.models.GameEnvironment;
+import jordanterry.co.uk.redbluered.game.models.GameObject;
 
 /**
  * Created by jordanterry on 11/10/15.
  */
-public class GamePanel extends SurfaceView implements View.OnTouchListener, SurfaceHolder.Callback {
+public class GamePanel extends SurfaceView implements View.OnTouchListener, SurfaceHolder.Callback, GameSurface {
 
     public static final String TAG = GamePanel.class.getSimpleName();
 
-    private GameEnvironment mGameEnvironment;
-    private boolean isAddStep = false;
-
     public interface OnGameInteraction {
         void onGameOver();
+        void onClick(float x, float y);
+        void onReady(GameEnvironment gameEnvironment);
     }
 
     private OnGameInteraction mOnGameInteraction;
 
-    private Square mBlueSquare;
-    private Square mRedSquare;
-    private Square mInstructionSquare;
-    private Steps mGameColours;
-    private Steps mUserColours;
-
-    private int mLevel;
-
-    private long mChangeStepTime = 0;
-    private long mDisplayStep = 0;
-    private static final long STEP_DISPLAY_TIME = 1000;
 
 
+    private GameObject[] mGameObjects;
 
     public GamePanel(Context context, OnGameInteraction onGameInteraction) {
         super(context);
@@ -52,83 +40,27 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
         getHolder().addCallback(this);
         setClickable(true);
         setOnTouchListener(this);
-        mGameEnvironment = new GameEnvironment(this);
-        mBlueSquare = new Square();
-        mRedSquare = new Square();
-        mInstructionSquare = new Square();
-
-        mGameColours = new Steps();
-        mUserColours = new Steps();
-        mLevel = 0;
-        addStep();
-
-    }
-
-    public void start() {
-        mGameEnvironment.startGame();
-        mGameEnvironment.start();
-    }
-
-    public void stop() throws InterruptedException {
-        mGameEnvironment.stopGame();
-        mGameEnvironment.join();
-    }
-
-    public void update() {
-        if(isAddStep && !mInstructionSquare.isVisible()) {
-            mInstructionSquare.show();
-            mRedSquare.hide();
-            mBlueSquare.hide();
-        } else if(!isAddStep && mInstructionSquare.isVisible()) {
-            mInstructionSquare.hide();
-            mRedSquare.show();
-            mBlueSquare.show();
-        }
 
 
-        if(isAddStep) {
-
-            for (int i = 0; i < mGameColours.getSteps().size(); i++) {
-
-                if(i == mDisplayStep && System.currentTimeMillis() < mChangeStepTime) {
-                    mInstructionSquare.setBackgroundColour(mGameColours.getColour(i));
-                } else if(i == mDisplayStep && System.currentTimeMillis() > mChangeStepTime) {
-                    mChangeStepTime = System.currentTimeMillis() + STEP_DISPLAY_TIME;
-                    mDisplayStep++;
-                } else if(i == mDisplayStep - 1 && i == mGameColours.getSteps().size() - 1 && mChangeStepTime < System.currentTimeMillis()) {
-                    isAddStep = false;
-                }
-            }
-
-        }
     }
 
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
         canvas.drawColor(Color.WHITE);
-        mRedSquare.draw(canvas);
-        mBlueSquare.draw(canvas);
-        mInstructionSquare.draw(canvas);
+        if(mGameObjects != null) {
+
+            for (int i = 0; i < mGameObjects.length; i++) {
+                mGameObjects[i].draw(canvas);
+            }
+
+        }
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        float squareWidth = getWidth() * .25f;
-        float squareHalf = squareWidth * .5f;
 
-        mRedSquare.setPosition((getWidth() * .25f) - squareHalf, (getHeight() * .5f) - squareHalf);
-        mRedSquare.setEdge(squareWidth);
-        mRedSquare.setBackgroundColour(GameColours.RED);
-
-        mBlueSquare.setPosition((getWidth() * .75f) - squareHalf, (getHeight() * .5f) - squareHalf);
-        mBlueSquare.setEdge(squareWidth);
-        mBlueSquare.setBackgroundColour(GameColours.BLUE);
-
-        mInstructionSquare.setPosition((getWidth() * .5f) - squareHalf, (getHeight() * .5f) - squareHalf);
-        mInstructionSquare.setEdge(squareWidth);
-        mInstructionSquare.setBackgroundColour(Color.BLACK);
-        mInstructionSquare.hide();
+        mOnGameInteraction.onReady(new GameEnvironment(getWidth(), getHeight()));
 
     }
 
@@ -143,19 +75,33 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
     }
 
 
+
+    @Override
+    public void drawState(GameObject[] gameObjects) {
+        mGameObjects = gameObjects;
+        Canvas canvas = null;
+
+        canvas = getHolder().lockCanvas(null);
+        synchronized (getHolder()){
+            if(canvas != null) {
+                draw(canvas);
+            }
+        }
+
+        if (canvas != null) {
+            getHolder().unlockCanvasAndPost(canvas);
+        }
+    }
+
+
+
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
 
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
 
-                if(mBlueSquare.isTouch(motionEvent.getX(), motionEvent.getY())) {
-                    checkUserClick(GameColours.BLUE);
-                }
-
-                if(mRedSquare.isTouch(motionEvent.getX(), motionEvent.getY())) {
-                    checkUserClick(GameColours.RED);
-                }
+                mOnGameInteraction.onClick(motionEvent.getX(), motionEvent.getY());
 
                 break;
         }
@@ -164,32 +110,4 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
         return false;
     }
 
-
-    private void checkUserClick(int colour) {
-        mUserColours.addStep(colour);
-        if (mGameColours.compareSteps(mUserColours)) {
-            if(mGameColours.getSteps().size() == mUserColours.getSteps().size()) {
-                addStep();
-            }
-        } else {
-            mOnGameInteraction.onGameOver();
-        }
-    }
-
-    private void addStep() {
-        mLevel++;
-        mUserColours = new Steps();
-        addNewColour();
-        displaySteps();
-    }
-
-    private void displaySteps() {
-        isAddStep = true;
-        mChangeStepTime = System.currentTimeMillis() + STEP_DISPLAY_TIME;
-        mDisplayStep = 0;
-    }
-
-    private void addNewColour() {
-        mGameColours.addStep(GameColours.randomColour());
-    }
 }

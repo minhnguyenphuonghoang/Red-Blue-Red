@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import jordanterry.co.uk.redbluered.game.GameController;
+import jordanterry.co.uk.redbluered.game.GameControllerImpl;
 
 /**
  * Created by jordanterry on 11/10/15.
@@ -16,7 +16,7 @@ public class GameFragment extends Fragment {
 
     public static final String TAG = GameFragment.class.getSimpleName();
 
-    private GameController mGameController;
+    private GameControllerImpl mGameController;
 
     public static GameFragment newInstance() {
         GameFragment fragment = new GameFragment();
@@ -29,7 +29,7 @@ public class GameFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mGameController = new GameController(getContext());
+        mGameController = new GameControllerImpl(getContext());
         mGameController.start();
         return mGameController.getGamePanel();
     }

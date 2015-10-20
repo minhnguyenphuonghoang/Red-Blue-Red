@@ -6,7 +6,7 @@ import android.graphics.Paint;
 /**
  * Created by jordanterry on 11/10/15.
  */
-public class Square {
+public class Square implements GameObject {
 
     private Paint mBackgroundColour;
 
@@ -17,7 +17,7 @@ public class Square {
 
     private float mEdge;
 
-    private boolean isHidden = false;
+    private boolean isVisible = true;
 
 
     public Square() {
@@ -33,39 +33,29 @@ public class Square {
     }
 
 
-
-    public void setPosition(float x, float y) {
-        mX = x;
-        mY = y;
+    @Override
+    public void setBackground(int color) {
+        mBackgroundColour.setColor(color);
     }
 
-    public void setEdge(float edge) {
-        mEdge = edge;
-    }
-
-
-    public void setBackgroundColour(int colour) {
-        mBackgroundColour.setColor(colour);
-    }
-
+    @Override
     public void draw(Canvas canvas) {
-        if(!isHidden) {
+        if(isVisible) {
             canvas.drawRect(mX, mY, mX + mEdge, mY + mEdge, mBackgroundColour);
         }
     }
 
-    public void hide() {
-        isHidden = true;
+    @Override
+    public void setVisibility(boolean visible) {
+        isVisible = visible;
     }
 
-    public void show() {
-        isHidden = false;
-    }
-
+    @Override
     public boolean isVisible() {
-        return !isHidden;
+        return isVisible;
     }
 
+    @Override
     public boolean isTouch(float x, float y) {
         return x > mX && x < mX + mEdge && y > mY && y < mY + mEdge;
     }

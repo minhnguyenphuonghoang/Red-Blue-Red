@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import jordanterry.co.uk.redbluered.game.GameController;
+import jordanterry.co.uk.redbluered.game.GameControllerImpl;
 import jordanterry.co.uk.redbluered.game.creators.DaggerGameComponent;
 import jordanterry.co.uk.redbluered.game.creators.GameComponent;
 import jordanterry.co.uk.redbluered.game.modules.GameModule;
@@ -18,7 +18,7 @@ public class GameActivity extends AppCompatActivity {
 
     private GameComponent mGameComponent;
 
-    private GameController mGameController;
+    private GameControllerImpl mGameController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,13 +31,6 @@ public class GameActivity extends AppCompatActivity {
         setContentView(mGameController.getGamePanel());
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if(mGameController != null) {
-            mGameController.start();
-        }
-    }
 
     @Override
     protected void onPause() {

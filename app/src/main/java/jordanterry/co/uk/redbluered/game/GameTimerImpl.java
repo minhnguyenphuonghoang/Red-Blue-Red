@@ -1,58 +1,40 @@
 package jordanterry.co.uk.redbluered.game;
 
-import android.graphics.Canvas;
 import android.util.Log;
-import android.view.SurfaceHolder;
 
 /**
  * Created by jordanterry on 11/10/15.
  */
-public class GameEnvironment extends Thread {
+public class GameTimerImpl extends Thread implements GameTimer {
 
-    public static final String TAG = GameEnvironment.class.getSimpleName();
+    public static final String TAG = GameTimerImpl.class.getSimpleName();
 
     private final static int MAX_FRAME_SKIPS = 5;
     private final static int MAX_FPS = 50;
     private final static int FRAME_PERIOD = 1000 / MAX_FPS;
-    private GamePanel mGamePanel;
-    private SurfaceHolder mSurfaceHolder;
     private boolean isRunning = false;
     private boolean isGameEnded = false;
+    private GameController mGameController;
 
 
-    public GameEnvironment(GamePanel gamePanel) {
-        mGamePanel = gamePanel;
-        mSurfaceHolder = gamePanel.getHolder();
-    }
-
-
-    public void startGame() {
-        isRunning = true;
-        isGameEnded = false;
-    }
-
-    public void stopGame() {
-        isRunning = false;
-        isGameEnded = true;
+    public GameTimerImpl(GameController gameController) {
+        mGameController = gameController;
     }
 
     @Override
     public void run() {
-        Canvas c;
         long beginTime, timeDiff;
         int sleepTime, framesSkipped;
         while(isRunning){
             if(!isGameEnded) {
                 beginTime = System.currentTimeMillis();
-                c = null;
                 framesSkipped = 0;
-                mGamePanel.update();
-                c = mSurfaceHolder.lockCanvas(null);
-                synchronized (mSurfaceHolder){
-                    if(c != null) {
-                        mGamePanel.draw(c);
-                    }
-                }
+
+                mGameController.updateState();
+
+                mGameController.drawState();
+
+
                 timeDiff = System.currentTimeMillis() - beginTime;
                 sleepTime = (int)(FRAME_PERIOD - timeDiff);
                 if(sleepTime > 0) {
@@ -62,19 +44,30 @@ public class GameEnvironment extends Thread {
                         Log.e(TAG, e.getMessage());
                     }
                 }
+
                 while (sleepTime < 0 && framesSkipped < MAX_FRAME_SKIPS) {
-                    mGamePanel.update();
+                    mGameController.updateState();
                     sleepTime += FRAME_PERIOD;
                     framesSkipped++;
                 }
-                if (c != null) {
-                    mSurfaceHolder.unlockCanvasAndPost(c);
-                }
+
             } else {
-                return;
+                isRunning = false;
             }
         }
     }
 
 
+    @Override
+    public void startTimer() {
+        isRunning = true;
+        isGameEnded = false;
+        start();
+    }
+
+    @Override
+    public void stopTimer() throws InterruptedException {
+        isGameEnded = true;
+        join();
+    }
 }
