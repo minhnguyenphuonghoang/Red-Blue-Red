@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 
+import java.util.ArrayList;
+
 import javax.inject.Inject;
 
 import jordanterry.co.uk.redbluered.game.models.GameEnvironment;
@@ -31,12 +33,18 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
     private GameObject mBlueSquare;
     private GameObject mRedSquare;
     private GameObject mInstructionSquare;
+    private GameObject mAnimateSquare;
 
 
     private Steps mGameColours = new Steps();
     private Steps mUserColours = new Steps();
 
     private boolean isAddStep = false;
+    private boolean isAnimateOldStep = false;
+    private float mOldStepTransition = 10;
+
+    private float mWidth;
+    private float mHeight;
 
     private int mLevel;
 
@@ -92,16 +100,23 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
 
         mLevel = 0;
 
+        mWidth = gameEnvironment.getWidth();
+        mHeight = gameEnvironment.getHeight();
 
-        float squareWidth = gameEnvironment.getWidth() * .25f;
+        float squareWidth = mWidth * .25f;
         float squareHalf = squareWidth * .5f;
 
-        mRedSquare = new Square((gameEnvironment.getWidth() * .25f) - squareHalf, (gameEnvironment.getHeight() * .5f) - squareHalf, squareWidth, GameColours.RED);
+        mRedSquare = new Square((mWidth * .25f) - squareHalf, (mHeight * .5f) - squareHalf, squareWidth, GameColours.RED);
 
-        mBlueSquare = new Square((gameEnvironment.getWidth() * .75f) - squareHalf, (gameEnvironment.getHeight() * .5f) - squareHalf, squareWidth, GameColours.BLUE);
+        mBlueSquare = new Square((mWidth * .75f) - squareHalf, (mHeight * .5f) - squareHalf, squareWidth, GameColours.BLUE);
 
-        mInstructionSquare = new Square((gameEnvironment.getWidth() * .5f) - squareHalf, (gameEnvironment.getHeight() * .5f) - squareHalf, squareWidth, Color.BLACK);
+        mInstructionSquare = new Square((mWidth * .5f) - squareHalf, (mHeight * .5f) - squareHalf, squareWidth, Color.BLACK);
         mInstructionSquare.setVisibility(false);
+
+        mAnimateSquare = new Square((mWidth * .5f) - squareHalf, (mHeight * .5f) - squareHalf, squareWidth, Color.BLACK);
+        mAnimateSquare.setVisibility(false);
+
+        mOldStepTransition = mWidth * .01f;
 
         addStep();
 
@@ -116,10 +131,12 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
 
         if(isAddStep && !mInstructionSquare.isVisible()) {
             mInstructionSquare.setVisibility(true);
+            mAnimateSquare.setVisibility(false);
             mRedSquare.setVisibility(false);
             mBlueSquare.setVisibility(false);
         } else if(!isAddStep && mInstructionSquare.isVisible()) {
             mInstructionSquare.setVisibility(false);
+            mAnimateSquare.setVisibility(false);
             mRedSquare.setVisibility(true);
             mBlueSquare.setVisibility(true);
         }
@@ -127,11 +144,19 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
 
         if(isAddStep) {
 
+
             for (int i = 0; i < mGameColours.getSteps().size(); i++) {
 
                 if(i == mDisplayStep && System.currentTimeMillis() < mChangeStepTime) {
                     mInstructionSquare.setBackground(mGameColours.getColour(i));
+                    if(i != 0) {
+                        mAnimateSquare.setBackground(mGameColours.getColour(i - 1));
+                        isAnimateOldStep = true;
+                    }
                 } else if(i == mDisplayStep && System.currentTimeMillis() > mChangeStepTime) {
+                    isAnimateOldStep = false;
+                    mAnimateSquare.setVisibility(false);
+                    mAnimateSquare.setX((mWidth * .5f) - ((mWidth * .25f) * .5f));
                     mChangeStepTime = System.currentTimeMillis() + STEP_DISPLAY_TIME;
                     mDisplayStep++;
                 } else if(i == mDisplayStep - 1 && i == mGameColours.getSteps().size() - 1 && mChangeStepTime < System.currentTimeMillis()) {
@@ -141,15 +166,22 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
 
         }
 
+        if(isAnimateOldStep) {
+            mAnimateSquare.setVisibility(true);
+            mAnimateSquare.setX(mAnimateSquare.getX() - mOldStepTransition);
+        }
+
 
     }
 
     @Override
     public void drawState() {
-        GameObject[] gameObjects = new GameObject[3];
-        gameObjects[0] = mRedSquare;
-        gameObjects[1] = mBlueSquare;
-        gameObjects[2] = mInstructionSquare;
+        ArrayList<GameObject> gameObjects = new ArrayList<GameObject>();
+
+        gameObjects.add(mRedSquare);
+        gameObjects.add(mBlueSquare);
+        gameObjects.add(mInstructionSquare);
+        gameObjects.add(mAnimateSquare);
         mGameSurface.drawState(gameObjects);
     }
 

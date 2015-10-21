@@ -1,5 +1,7 @@
 package jordanterry.co.uk.redbluered.game;
 
+import java.util.List;
+
 import jordanterry.co.uk.redbluered.game.models.GameObject;
 
 /**
@@ -7,6 +9,6 @@ import jordanterry.co.uk.redbluered.game.models.GameObject;
  */
 public interface GameSurface {
 
-    void drawState(GameObject[] gameObjects);
+    void drawState(List<GameObject> gameObjects);
 
 }

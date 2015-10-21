@@ -1,4 +1,4 @@
-package jordanterry.co.uk.redbluered.game.creators;
+package jordanterry.co.uk.redbluered.game.components;
 
 import dagger.Component;
 import jordanterry.co.uk.redbluered.game.GameControllerImpl;

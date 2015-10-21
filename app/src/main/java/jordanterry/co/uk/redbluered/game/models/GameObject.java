@@ -13,6 +13,14 @@ public interface GameObject {
 
     void setVisibility(boolean visible);
 
+    void setX(float x);
+
+    void setY(float y);
+
+    float getX();
+
+    float getY();
+
     boolean isVisible();
 
     boolean isTouch(float x, float y);

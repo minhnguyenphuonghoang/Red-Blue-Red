@@ -8,6 +8,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 
+import java.util.List;
+
 import jordanterry.co.uk.redbluered.game.models.GameEnvironment;
 import jordanterry.co.uk.redbluered.game.models.GameObject;
 
@@ -28,7 +30,7 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
 
 
 
-    private GameObject[] mGameObjects;
+    private List<GameObject> mGameObjects;
 
     public GamePanel(Context context, OnGameInteraction onGameInteraction) {
         super(context);
@@ -50,8 +52,8 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
         canvas.drawColor(Color.WHITE);
         if(mGameObjects != null) {
 
-            for (int i = 0; i < mGameObjects.length; i++) {
-                mGameObjects[i].draw(canvas);
+            for (GameObject gameObject : mGameObjects) {
+                gameObject.draw(canvas);
             }
 
         }
@@ -77,7 +79,7 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
 
 
     @Override
-    public void drawState(GameObject[] gameObjects) {
+    public void drawState(List<GameObject> gameObjects) {
         mGameObjects = gameObjects;
         Canvas canvas = null;
 

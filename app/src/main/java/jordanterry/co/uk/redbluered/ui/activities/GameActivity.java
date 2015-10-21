@@ -5,8 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import jordanterry.co.uk.redbluered.game.GameControllerImpl;
-import jordanterry.co.uk.redbluered.game.creators.DaggerGameComponent;
-import jordanterry.co.uk.redbluered.game.creators.GameComponent;
+import jordanterry.co.uk.redbluered.game.components.DaggerGameComponent;
+import jordanterry.co.uk.redbluered.game.components.GameComponent;
 import jordanterry.co.uk.redbluered.game.modules.GameModule;
 
 /**

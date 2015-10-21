@@ -51,6 +51,26 @@ public class Square implements GameObject {
     }
 
     @Override
+    public void setX(float x) {
+        mX = x;
+    }
+
+    @Override
+    public void setY(float y) {
+        mY = y;
+    }
+
+    @Override
+    public float getX() {
+        return mX;
+    }
+
+    @Override
+    public float getY() {
+        return mY;
+    }
+
+    @Override
     public boolean isVisible() {
         return isVisible;
     }
