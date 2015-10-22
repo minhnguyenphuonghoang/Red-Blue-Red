@@ -6,27 +6,15 @@ import android.graphics.Paint;
 /**
  * Created by jordanterry on 11/10/15.
  */
-public class Square implements GameObject {
+public class Square extends BaseShape {
 
     private Paint mBackgroundColour;
 
-    private float mX;
-
-    private float mY;
-
-
     private float mEdge;
 
-    private boolean isVisible = true;
-
-
-    public Square() {
-        mBackgroundColour = new Paint();
-    }
 
     public Square(float x, float y, float edge, int colour) {
-        mX = x;
-        mY = y;
+        super(x, y);
         mEdge = edge;
         mBackgroundColour = new Paint();
         mBackgroundColour.setColor(colour);
@@ -40,44 +28,15 @@ public class Square implements GameObject {
 
     @Override
     public void draw(Canvas canvas) {
-        if(isVisible) {
-            canvas.drawRect(mX, mY, mX + mEdge, mY + mEdge, mBackgroundColour);
+        if(isVisible()) {
+            canvas.drawRect(getX(), getY(), getX() + mEdge, getY() + mEdge, mBackgroundColour);
         }
     }
 
-    @Override
-    public void setVisibility(boolean visible) {
-        isVisible = visible;
-    }
-
-    @Override
-    public void setX(float x) {
-        mX = x;
-    }
-
-    @Override
-    public void setY(float y) {
-        mY = y;
-    }
-
-    @Override
-    public float getX() {
-        return mX;
-    }
-
-    @Override
-    public float getY() {
-        return mY;
-    }
-
-    @Override
-    public boolean isVisible() {
-        return isVisible;
-    }
 
     @Override
     public boolean isTouch(float x, float y) {
-        return x > mX && x < mX + mEdge && y > mY && y < mY + mEdge;
+        return x > getX() && x < getX() + mEdge && y > getY() && y < getY() + mEdge;
     }
 
 

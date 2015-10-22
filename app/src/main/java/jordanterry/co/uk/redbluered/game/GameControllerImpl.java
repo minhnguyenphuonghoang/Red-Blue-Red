@@ -12,6 +12,7 @@ import jordanterry.co.uk.redbluered.game.models.GameEnvironment;
 import jordanterry.co.uk.redbluered.game.models.GameObject;
 import jordanterry.co.uk.redbluered.game.models.Square;
 import jordanterry.co.uk.redbluered.game.models.Steps;
+import jordanterry.co.uk.redbluered.game.models.Text;
 import jordanterry.co.uk.redbluered.ui.activities.MenuActivity;
 
 
@@ -52,6 +53,7 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
     private long mDisplayStep = 0;
     private static final long STEP_DISPLAY_TIME = 1000;
 
+    private Text mLevelText;
 
     private GamePanel mGameSurface;
 
@@ -88,9 +90,7 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
     public void onClick(float x, float y) {
         if(mBlueSquare.isTouch(x, y)) {
             checkUserClick(GameColours.BLUE);
-        }
-
-        if(mRedSquare.isTouch(x, y)) {
+        } else if(mRedSquare.isTouch(x, y)) {
             checkUserClick(GameColours.RED);
         }
     }
@@ -116,6 +116,13 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
         mAnimateSquare = new Square((mWidth * .5f) - squareHalf, (mHeight * .5f) - squareHalf, squareWidth, Color.BLACK);
         mAnimateSquare.setVisibility(false);
 
+        float textWidth = Text.measureText(String.valueOf(mLevel));
+
+        mLevelText = new Text((mWidth * .5f) - (textWidth * .5f), mHeight * .15f, String.valueOf(mLevel), GameColours.RED);
+
+
+
+
         mOldStepTransition = mWidth * .01f;
 
         addStep();
@@ -127,7 +134,10 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
     @Override
     public void updateState() {
 
+        float textWidth = Text.measureText(String.valueOf(mLevel));
 
+        mLevelText.setText(String.valueOf(mLevel));
+        mLevelText.setX((mWidth * .5f) - (textWidth * .5f));
 
         if(isAddStep && !mInstructionSquare.isVisible()) {
             mInstructionSquare.setVisibility(true);
@@ -182,6 +192,7 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
         gameObjects.add(mBlueSquare);
         gameObjects.add(mInstructionSquare);
         gameObjects.add(mAnimateSquare);
+        gameObjects.add(mLevelText);
         mGameSurface.drawState(gameObjects);
     }
 
