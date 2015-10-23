@@ -99,16 +99,11 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
-
                 mOnGameInteraction.onClick(motionEvent.getX(), motionEvent.getY());
-
                 break;
         }
-
-
         return false;
     }
 

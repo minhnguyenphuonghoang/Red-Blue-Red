@@ -7,16 +7,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import jordanterry.co.uk.redbluered.game.GameControllerImpl;
+import jordanterry.co.uk.redbluered.ui.presenters.GamePresenter;
+import jordanterry.co.uk.redbluered.ui.presenters.GamePresenterImpl;
+import jordanterry.co.uk.redbluered.ui.views.GameView;
 
 /**
  * Created by jordanterry on 11/10/15.
  */
-public class GameFragment extends Fragment {
+public class GameFragment extends Fragment implements GameView {
 
     public static final String TAG = GameFragment.class.getSimpleName();
 
-    private GameControllerImpl mGameController;
+    private GamePresenter mGamePresenter;
 
     public static GameFragment newInstance() {
         GameFragment fragment = new GameFragment();
@@ -26,23 +28,22 @@ public class GameFragment extends Fragment {
     }
 
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mGamePresenter = new GamePresenterImpl(getContext(), this);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mGameController = new GameControllerImpl(getContext());
-        mGameController.start();
-        return mGameController.getGamePanel();
+        mGamePresenter.startGame();
+        return mGamePresenter.getGameSurface();
     }
-
-
 
     @Override
     public void onStop() {
         super.onStop();
-        try {
-            mGameController.stop();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        mGamePresenter.onStop();
     }
 }

@@ -14,11 +14,14 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import jordanterry.co.uk.redbluered.R;
 import jordanterry.co.uk.redbluered.interfaces.OnPlayClicked;
+import jordanterry.co.uk.redbluered.ui.presenters.MenuPresenter;
+import jordanterry.co.uk.redbluered.ui.presenters.MenuPresenterImpl;
+import jordanterry.co.uk.redbluered.ui.views.MenuView;
 
 /**
  * Created by jordanterry on 11/10/15.
  */
-public class MenuFragment extends Fragment {
+public class MenuFragment extends Fragment implements MenuView {
 
     public static final String TAG = MenuFragment.class.getSimpleName();
 
@@ -26,6 +29,7 @@ public class MenuFragment extends Fragment {
 
     private OnPlayClicked mOnPlayClicked;
 
+    private MenuPresenter mMenuPresenter;
 
     public static MenuFragment newInstance() {
         MenuFragment fragment = new MenuFragment();
@@ -34,6 +38,11 @@ public class MenuFragment extends Fragment {
         return fragment;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mMenuPresenter = new MenuPresenterImpl(this);
+    }
 
     @Nullable
     @Override

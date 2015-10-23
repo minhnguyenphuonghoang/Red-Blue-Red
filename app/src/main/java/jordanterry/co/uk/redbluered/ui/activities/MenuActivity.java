@@ -1,15 +1,14 @@
 package jordanterry.co.uk.redbluered.ui.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import jordanterry.co.uk.redbluered.R;
 import jordanterry.co.uk.redbluered.interfaces.OnPlayClicked;
+import jordanterry.co.uk.redbluered.ui.fragments.GameFragment;
 import jordanterry.co.uk.redbluered.ui.fragments.MenuFragment;
 
-public class MenuActivity extends AppCompatActivity implements OnPlayClicked {
+public class MenuActivity extends BaseActivity implements OnPlayClicked {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,17 +17,14 @@ public class MenuActivity extends AppCompatActivity implements OnPlayClicked {
 
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.content, MenuFragment.newInstance(), MenuFragment.TAG)
-                .commit();
-
+        addFragment(R.id.content, MenuFragment.newInstance(), MenuFragment.TAG);
 
     }
 
     @Override
     public void onPlayClicked() {
-        Intent intent = new Intent(this, GameActivity.class);
-        startActivity(intent);
+
+        addFragment(R.id.content, GameFragment.newInstance(), GameFragment.TAG);
     }
 
 

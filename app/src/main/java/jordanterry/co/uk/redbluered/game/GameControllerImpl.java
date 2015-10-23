@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
+import jordanterry.co.uk.redbluered.R;
 import jordanterry.co.uk.redbluered.game.models.GameEnvironment;
 import jordanterry.co.uk.redbluered.game.models.GameObject;
 import jordanterry.co.uk.redbluered.game.models.Square;
@@ -51,13 +52,17 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
 
     private long mChangeStepTime = 0;
     private long mDisplayStep = 0;
+    private long mDelayTime = 0;
+
     private static final long STEP_DISPLAY_TIME = 1000;
+    private static final long STEP_DELAY_TIME = 200;
 
     private Text mLevelText;
 
     private GamePanel mGameSurface;
 
     private GameTimer mGameTimer;
+    private boolean isReady = false;
 
     @Inject
     public GameControllerImpl(Context context) {
@@ -65,6 +70,7 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
         mGameTimer = new GameTimerImpl(this);
     }
 
+    @Override
     public GamePanel getGamePanel() {
         return mGameSurface;
     }
@@ -97,90 +103,76 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
 
     @Override
     public void onReady(GameEnvironment gameEnvironment) {
-
+        isReady = true;
         mLevel = 0;
-
         mWidth = gameEnvironment.getWidth();
         mHeight = gameEnvironment.getHeight();
 
         float squareWidth = mWidth * .25f;
         float squareHalf = squareWidth * .5f;
 
-        mRedSquare = new Square((mWidth * .25f) - squareHalf, (mHeight * .5f) - squareHalf, squareWidth, GameColours.RED);
+        mRedSquare = new Square((mWidth * .25f) - squareHalf, (mHeight * .6f) - squareHalf, squareWidth, GameColours.RED);
 
-        mBlueSquare = new Square((mWidth * .75f) - squareHalf, (mHeight * .5f) - squareHalf, squareWidth, GameColours.BLUE);
+        mBlueSquare = new Square((mWidth * .75f) - squareHalf, (mHeight * .6f) - squareHalf, squareWidth, GameColours.BLUE);
 
-        mInstructionSquare = new Square((mWidth * .5f) - squareHalf, (mHeight * .5f) - squareHalf, squareWidth, Color.BLACK);
+        mInstructionSquare = new Square((mWidth * .5f) - squareHalf, (mHeight * .6f) - squareHalf, squareWidth, Color.BLACK);
         mInstructionSquare.setVisibility(false);
 
-        mAnimateSquare = new Square((mWidth * .5f) - squareHalf, (mHeight * .5f) - squareHalf, squareWidth, Color.BLACK);
+        mAnimateSquare = new Square((mWidth * .5f) - squareHalf, (mHeight * .6f) - squareHalf, squareWidth, Color.BLACK);
         mAnimateSquare.setVisibility(false);
 
         float textWidth = Text.measureText(String.valueOf(mLevel));
-
-        mLevelText = new Text((mWidth * .5f) - (textWidth * .5f), mHeight * .15f, String.valueOf(mLevel), GameColours.RED);
-
-
-
-
+        float textSize = mContext.getResources().getDimension(R.dimen.level_text_size);
+        mLevelText = new Text((mWidth * .5f) - (textWidth * .5f), mHeight * .25f, String.valueOf(mLevel), GameColours.RED, textSize);
         mOldStepTransition = mWidth * .01f;
-
         addStep();
-
         start();
+
     }
 
 
     @Override
     public void updateState() {
+        if(isReady) {
 
-        float textWidth = Text.measureText(String.valueOf(mLevel));
+            float textWidth = Text.measureText(String.valueOf(mLevel));
 
-        mLevelText.setText(String.valueOf(mLevel));
-        mLevelText.setX((mWidth * .5f) - (textWidth * .5f));
+            mLevelText.setText(String.valueOf(mLevel));
+            mLevelText.setX((mWidth * .5f) - (textWidth * .5f));
 
-        if(isAddStep && !mInstructionSquare.isVisible()) {
-            mInstructionSquare.setVisibility(true);
-            mAnimateSquare.setVisibility(false);
-            mRedSquare.setVisibility(false);
-            mBlueSquare.setVisibility(false);
-        } else if(!isAddStep && mInstructionSquare.isVisible()) {
-            mInstructionSquare.setVisibility(false);
-            mAnimateSquare.setVisibility(false);
-            mRedSquare.setVisibility(true);
             mBlueSquare.setVisibility(true);
-        }
+            mRedSquare.setVisibility(true);
 
 
-        if(isAddStep) {
-
-
-            for (int i = 0; i < mGameColours.getSteps().size(); i++) {
-
-                if(i == mDisplayStep && System.currentTimeMillis() < mChangeStepTime) {
-                    mInstructionSquare.setBackground(mGameColours.getColour(i));
-                    if(i != 0) {
-                        mAnimateSquare.setBackground(mGameColours.getColour(i - 1));
-                        isAnimateOldStep = true;
+            if(isAddStep) {
+                if(System.currentTimeMillis() < mDelayTime) {
+                    mBlueSquare.setVisibility(false);
+                    mRedSquare.setVisibility(false);
+                } else {
+                    mDelayTime = 0;
+                    for (int i = 0; i < mGameColours.getSteps().size(); i++) {
+                        if(i == mDisplayStep && System.currentTimeMillis() < mChangeStepTime) {
+                            if(mGameColours.getColour(i) == GameColours.RED) {
+                                mRedSquare.setVisibility(true);
+                                mBlueSquare.setVisibility(false);
+                            } else if(mGameColours.getColour(i) == GameColours.BLUE) {
+                                mBlueSquare.setVisibility(true);
+                                mRedSquare.setVisibility(false);
+                            }
+                        } else if(i == mDisplayStep && System.currentTimeMillis() > mChangeStepTime) {
+                            mBlueSquare.setVisibility(false);
+                            mRedSquare.setVisibility(false);
+                            mDelayTime = System.currentTimeMillis() + STEP_DELAY_TIME;
+                            mChangeStepTime = System.currentTimeMillis() + STEP_DISPLAY_TIME + STEP_DELAY_TIME;
+                            mDisplayStep++;
+                        } else if(i == mDisplayStep - 1 && i == mGameColours.getSteps().size() - 1 && mChangeStepTime < System.currentTimeMillis()) {
+                            isAddStep = false;
+                        }
                     }
-                } else if(i == mDisplayStep && System.currentTimeMillis() > mChangeStepTime) {
-                    isAnimateOldStep = false;
-                    mAnimateSquare.setVisibility(false);
-                    mAnimateSquare.setX((mWidth * .5f) - ((mWidth * .25f) * .5f));
-                    mChangeStepTime = System.currentTimeMillis() + STEP_DISPLAY_TIME;
-                    mDisplayStep++;
-                } else if(i == mDisplayStep - 1 && i == mGameColours.getSteps().size() - 1 && mChangeStepTime < System.currentTimeMillis()) {
-                    isAddStep = false;
                 }
+
             }
-
         }
-
-        if(isAnimateOldStep) {
-            mAnimateSquare.setVisibility(true);
-            mAnimateSquare.setX(mAnimateSquare.getX() - mOldStepTransition);
-        }
-
 
     }
 
@@ -193,6 +185,7 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
         gameObjects.add(mInstructionSquare);
         gameObjects.add(mAnimateSquare);
         gameObjects.add(mLevelText);
+
         mGameSurface.drawState(gameObjects);
     }
 

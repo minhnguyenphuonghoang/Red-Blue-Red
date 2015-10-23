@@ -8,16 +8,25 @@ import android.graphics.Paint;
  */
 public class Square extends BaseShape {
 
+    /**
+     *
+     */
     private Paint mBackgroundColour;
 
+    /**
+     *
+     */
     private float mEdge;
-
 
     public Square(float x, float y, float edge, int colour) {
         super(x, y);
         mEdge = edge;
         mBackgroundColour = new Paint();
         mBackgroundColour.setColor(colour);
+    }
+
+    public void setEdge(float edge) {
+        mEdge = edge;
     }
 
 

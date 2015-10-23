@@ -8,13 +8,16 @@ import android.app.Application;
 public class RBRApplication extends Application {
 
 
-
+    private static RBRApplication mInstance;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        mInstance = this;
+    }
 
-
+    public static RBRApplication getInstance() {
+        return mInstance;
     }
 
 }
