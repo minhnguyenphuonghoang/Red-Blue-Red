@@ -5,7 +5,7 @@ import jordanterry.co.uk.redbluered.game.GameControllerImpl;
 import jordanterry.co.uk.redbluered.game.modules.GameModule;
 
 /**
- * Created by jordanterry on 13/10/15.
+ * <p>Creates an Injected {@link GameControllerImpl}.</p>
  */
 @Component(modules = {GameModule.class})
 public interface GameComponent {

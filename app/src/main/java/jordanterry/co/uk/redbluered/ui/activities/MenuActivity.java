@@ -8,6 +8,10 @@ import jordanterry.co.uk.redbluered.interfaces.OnPlayClicked;
 import jordanterry.co.uk.redbluered.ui.fragments.GameFragment;
 import jordanterry.co.uk.redbluered.ui.fragments.MenuFragment;
 
+/**
+ * <p>The MenuActivity is the first Activity the user will visit.</p>
+ * <p>Will control the process of going from the menu to the game itself.</p>
+ */
 public class MenuActivity extends BaseActivity implements OnPlayClicked {
 
     @Override
@@ -17,19 +21,13 @@ public class MenuActivity extends BaseActivity implements OnPlayClicked {
 
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
-        addFragment(R.id.content, MenuFragment.newInstance(), MenuFragment.TAG);
+        addFragmentWithoutBackStack(R.id.content, MenuFragment.newInstance(), MenuFragment.TAG);
 
     }
 
     @Override
     public void onPlayClicked() {
-
         addFragment(R.id.content, GameFragment.newInstance(), GameFragment.TAG);
     }
 
-
-
-    private void hideStatusBar() {
-        getSupportActionBar().hide();
-    }
 }
