@@ -2,7 +2,6 @@ package jordanterry.co.uk.redbluered.game;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 
 import java.util.ArrayList;
 
@@ -18,50 +17,95 @@ import jordanterry.co.uk.redbluered.ui.activities.MenuActivity;
 
 
 /**
- * The GameController class contains the Game.
+ * <p>An implementation of the {@link GameController} interface.</p>
  */
 public class GameControllerImpl implements GamePanel.OnGameInteraction, GameController {
 
     public static final String TAG = GameControllerImpl.class.getSimpleName();
 
     /**
-     * The Context of the game
+     * <p>The Context of the game.</p>
      */
     @Inject Context mContext;
 
-
-
-
+    /**
+     * <p>The Blue coloured square.</p>
+     */
     private GameObject mBlueSquare;
+
+    /**
+     * <p>The Red coloured Square.</p>
+     */
     private GameObject mRedSquare;
-    private GameObject mInstructionSquare;
-    private GameObject mAnimateSquare;
 
-
-    private Steps mGameColours = new Steps();
-    private Steps mUserColours = new Steps();
-
-    private boolean isAddStep = false;
-    private boolean isAnimateOldStep = false;
-    private float mOldStepTransition = 10;
-
-    private float mWidth;
-    private float mHeight;
-
-    private int mLevel;
-
-    private long mChangeStepTime = 0;
-    private long mDisplayStep = 0;
-    private long mDelayTime = 0;
-
-    private static final long STEP_DISPLAY_TIME = 1000;
-    private static final long STEP_DELAY_TIME = 200;
-
+    /**
+     * <p>The {@link Text} object that will be used to display the level.</p>
+     */
     private Text mLevelText;
 
+    /**
+     * <p>The coloured steps that the user must follow.</p>
+     */
+    private Steps mGameColours = new Steps();
+
+    /**
+     * <p>The steps that the user has selected.</p>
+     */
+    private Steps mUserColours = new Steps();
+
+    /**
+     * <p>Boolean indicating if a new step is being added.</p>
+     */
+    private boolean isAddStep = false;
+
+    /**
+     * <p>The GameEnvironment that the user is in.</p>
+     */
+    private GameEnvironment mGameEnvironment;
+
+    /**
+     * <p>The current level of the game.</p>
+     */
+    private int mLevel;
+
+    /**
+     * <p>The time that the last step was added to the game.</p>
+     */
+    private long mChangeStepTime = 0;
+
+    /**
+     * <p>The step of the game being displayed.</p>
+     */
+    private long mDisplayStep = 0;
+
+    /**
+     * <p>The time that the displaying of the game will be delayed until.</p>
+     */
+    private long mDelayTime = 0;
+
+    /**
+     * <p>The duration of time a step will be displayed for.</p>
+     */
+    private static final long STEP_DISPLAY_TIME = 1000;
+
+    /**
+     * <p>The duration of time the swapping between a step will be delayed for.</p>
+     */
+    private static final long STEP_DELAY_TIME = 200;
+
+
+    /**
+     * <p>The {@link GamePanel} that will controlling the visual element of the game.</p>
+     */
     private GamePanel mGameSurface;
 
+    /**
+     * <p>The {@link GameTimer} that will control the progress of the game.</p>
+     */
     private GameTimer mGameTimer;
+    /**
+     * <p>A boolean indicating if the game is ready to be drawn just yet.</p>
+     */
     private boolean isReady = false;
 
     @Inject
@@ -103,28 +147,24 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
 
     @Override
     public void onReady(GameEnvironment gameEnvironment) {
+        mGameEnvironment = gameEnvironment;
         isReady = true;
         mLevel = 0;
-        mWidth = gameEnvironment.getWidth();
-        mHeight = gameEnvironment.getHeight();
+        float width = gameEnvironment.getWidth();
+        float height = gameEnvironment.getHeight();
 
-        float squareWidth = mWidth * .25f;
+        float squareWidth = width * .25f;
         float squareHalf = squareWidth * .5f;
 
-        mRedSquare = new Square((mWidth * .25f) - squareHalf, (mHeight * .6f) - squareHalf, squareWidth, GameColours.RED);
+        mRedSquare = new Square((width * .25f) - squareHalf, (height * .6f) - squareHalf, squareWidth, GameColours.RED);
 
-        mBlueSquare = new Square((mWidth * .75f) - squareHalf, (mHeight * .6f) - squareHalf, squareWidth, GameColours.BLUE);
+        mBlueSquare = new Square((width * .75f) - squareHalf, (height * .6f) - squareHalf, squareWidth, GameColours.BLUE);
 
-        mInstructionSquare = new Square((mWidth * .5f) - squareHalf, (mHeight * .6f) - squareHalf, squareWidth, Color.BLACK);
-        mInstructionSquare.setVisibility(false);
-
-        mAnimateSquare = new Square((mWidth * .5f) - squareHalf, (mHeight * .6f) - squareHalf, squareWidth, Color.BLACK);
-        mAnimateSquare.setVisibility(false);
 
         float textWidth = Text.measureText(String.valueOf(mLevel));
         float textSize = mContext.getResources().getDimension(R.dimen.level_text_size);
-        mLevelText = new Text((mWidth * .5f) - (textWidth * .5f), mHeight * .25f, String.valueOf(mLevel), GameColours.RED, textSize);
-        mOldStepTransition = mWidth * .01f;
+        mLevelText = new Text((width * .5f) - (textWidth * .5f), height * .25f, String.valueOf(mLevel), GameColours.RED, textSize);
+
         addStep();
         start();
 
@@ -138,7 +178,7 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
             float textWidth = Text.measureText(String.valueOf(mLevel));
 
             mLevelText.setText(String.valueOf(mLevel));
-            mLevelText.setX((mWidth * .5f) - (textWidth * .5f));
+            mLevelText.setX((mGameEnvironment.getWidth() * .5f) - (textWidth * .5f));
 
             mBlueSquare.setVisibility(true);
             mRedSquare.setVisibility(true);
@@ -178,19 +218,21 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
 
     @Override
     public void drawState() {
-        ArrayList<GameObject> gameObjects = new ArrayList<GameObject>();
+        ArrayList<GameObject> gameObjects = new ArrayList<>();
 
         gameObjects.add(mRedSquare);
         gameObjects.add(mBlueSquare);
-        gameObjects.add(mInstructionSquare);
-        gameObjects.add(mAnimateSquare);
         gameObjects.add(mLevelText);
 
         mGameSurface.drawState(gameObjects);
     }
 
 
-
+    /**
+     * <p>When a user has clicked a {@link Square} confirm that it is the right colour to have been
+     * clicked.</p>
+     * @param colour int representing the colour.
+     */
     private void checkUserClick(int colour) {
         mUserColours.addStep(colour);
         if (mGameColours.compareSteps(mUserColours)) {
@@ -202,6 +244,9 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
         }
     }
 
+    /**
+     * <p>Add a new step to the game, increment the levels and begin displaying the stpes.</p>
+     */
     private void addStep() {
         mLevel++;
         mUserColours = new Steps();
@@ -209,12 +254,18 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
         displaySteps();
     }
 
+    /**
+     * <p>Display the next steps process.</p>
+     */
     private void displaySteps() {
         isAddStep = true;
         mChangeStepTime = System.currentTimeMillis() + STEP_DISPLAY_TIME;
         mDisplayStep = 0;
     }
 
+    /**
+     * <p>Add a new colour the GameColours {@link Steps} object.</p>
+     */
     private void addNewColour() {
         mGameColours.addStep(GameColours.randomColour());
     }

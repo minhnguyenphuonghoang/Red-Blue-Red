@@ -3,20 +3,49 @@ package jordanterry.co.uk.redbluered.game;
 import android.util.Log;
 
 /**
- * Created by jordanterry on 11/10/15.
+ * <p>An implementation of GameTimer with a thread that will control the change and displaying of
+ * state within the game.</p>
  */
 public class GameTimerImpl extends Thread implements GameTimer {
 
     public static final String TAG = GameTimerImpl.class.getSimpleName();
 
+    /**
+     * <p>The max number of skippable frames.</p>
+     */
     private final static int MAX_FRAME_SKIPS = 5;
+
+    /**
+     * <p>The max frames per second for the game.</p>
+     */
     private final static int MAX_FPS = 50;
+
+    /**
+     * <p>The length of a frame.</p>
+     */
     private final static int FRAME_PERIOD = 1000 / MAX_FPS;
+
+    /**
+     * <p>A boolean indicating if the game is running.</p>
+     */
     private boolean isRunning = false;
+
+    /**
+     * <p>A boolean indicating if the game has ended.</p>
+     */
     private boolean isGameEnded = false;
+
+    /**
+     * <p>The {@link GameController} that will be told when to update and when to display the game by the
+     * GameTimer.</p>
+     */
     private GameController mGameController;
 
 
+    /**
+     * <p>A constructor containing the GameController.</p>
+     * @param gameController
+     */
     public GameTimerImpl(GameController gameController) {
         mGameController = gameController;
     }

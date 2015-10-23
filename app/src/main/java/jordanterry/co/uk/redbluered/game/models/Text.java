@@ -24,6 +24,14 @@ public class Text extends BaseShape {
      */
     private float mTextSize;
 
+    /**
+     * <p>The constructor providing the coordinates, the text value colour and size.</p>
+     * @param x
+     * @param y
+     * @param text
+     * @param color
+     * @param textSize
+     */
     public Text(float x, float y, String text, int color, float textSize) {
         super(x, y);
         mText = text;
@@ -56,6 +64,13 @@ public class Text extends BaseShape {
         return false;
     }
 
+
+    /**
+     * <p>This is used to measure the size of the text when it is being drawn to the screen.</p>
+     * TODO: Make non-static and use the Paint within the object to draw the text accurately.
+     * @param text
+     * @return
+     */
     public static float measureText(String text) {
         Paint paint = new Paint();
         return paint.measureText(text);
