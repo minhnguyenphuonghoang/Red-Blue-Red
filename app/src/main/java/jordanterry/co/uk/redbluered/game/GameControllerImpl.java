@@ -152,38 +152,26 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
         mLevel = 0;
         float width = gameEnvironment.getWidth();
         float height = gameEnvironment.getHeight();
-
         float squareWidth = width * .25f;
         float squareHalf = squareWidth * .5f;
-
         mRedSquare = new Square((width * .25f) - squareHalf, (height * .6f) - squareHalf, squareWidth, GameColours.RED);
-
         mBlueSquare = new Square((width * .75f) - squareHalf, (height * .6f) - squareHalf, squareWidth, GameColours.BLUE);
-
-
         float textWidth = Text.measureText(String.valueOf(mLevel));
         float textSize = mContext.getResources().getDimension(R.dimen.level_text_size);
         mLevelText = new Text((width * .5f) - (textWidth * .5f), height * .25f, String.valueOf(mLevel), GameColours.RED, textSize);
-
         addStep();
         start();
-
     }
 
 
     @Override
     public void updateState() {
         if(isReady) {
-
             float textWidth = Text.measureText(String.valueOf(mLevel));
-
             mLevelText.setText(String.valueOf(mLevel));
             mLevelText.setX((mGameEnvironment.getWidth() * .5f) - (textWidth * .5f));
-
             mBlueSquare.setVisibility(true);
             mRedSquare.setVisibility(true);
-
-
             if(isAddStep) {
                 if(System.currentTimeMillis() < mDelayTime) {
                     mBlueSquare.setVisibility(false);
@@ -210,10 +198,8 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
                         }
                     }
                 }
-
             }
         }
-
     }
 
     @Override

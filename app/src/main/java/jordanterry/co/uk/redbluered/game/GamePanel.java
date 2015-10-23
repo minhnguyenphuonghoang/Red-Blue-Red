@@ -45,8 +45,8 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
      */
     public GamePanel(Context context, OnGameInteraction onGameInteraction) {
         super(context);
-        init();
         mOnGameInteraction = onGameInteraction;
+        init();
     }
 
     /**
@@ -84,7 +84,6 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
         // Empty
     }
-
 
 
     @Override
