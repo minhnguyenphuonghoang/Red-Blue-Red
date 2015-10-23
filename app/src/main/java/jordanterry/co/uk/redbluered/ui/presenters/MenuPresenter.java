@@ -1,7 +1,7 @@
 package jordanterry.co.uk.redbluered.ui.presenters;
 
 /**
- * Created by jordanterry on 23/10/15.
+ * <p>The MenuPresenter that will be used to control the Main View.</p>
  */
 public interface MenuPresenter extends Presenter {
 

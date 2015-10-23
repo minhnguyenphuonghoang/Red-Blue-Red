@@ -3,7 +3,7 @@ package jordanterry.co.uk.redbluered;
 import android.app.Application;
 
 /**
- * Created by jordanterry on 13/10/15.
+ * <p>The main Application classs. Contains a static instance of itself.</p>
  */
 public class RBRApplication extends Application {
 
@@ -16,6 +16,10 @@ public class RBRApplication extends Application {
         mInstance = this;
     }
 
+    /**
+     * <p>Get the current instance of the RBRApplication.</p>
+     * @return
+     */
     public static RBRApplication getInstance() {
         return mInstance;
     }

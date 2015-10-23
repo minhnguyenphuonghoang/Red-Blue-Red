@@ -1,7 +1,7 @@
 package jordanterry.co.uk.redbluered.ui.views;
 
 /**
- * Created by jordanterry on 23/10/15.
+ * <p>An interface defining the MenuView.</p>
  */
 public interface MenuView {
     void playGame();

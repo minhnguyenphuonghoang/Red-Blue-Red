@@ -12,14 +12,21 @@ import jordanterry.co.uk.redbluered.ui.presenters.GamePresenterImpl;
 import jordanterry.co.uk.redbluered.ui.views.GameView;
 
 /**
- * Created by jordanterry on 11/10/15.
+ * <p>The GameFragment implements {@link GameView}.</p>
  */
 public class GameFragment extends Fragment implements GameView {
 
     public static final String TAG = GameFragment.class.getSimpleName();
 
+    /**
+     * <p>The {@link GamePresenter} object.</p>
+     */
     private GamePresenter mGamePresenter;
 
+    /**
+     * <p>Create a new instance of the GameFragment object.</p>
+     * @return
+     */
     public static GameFragment newInstance() {
         GameFragment fragment = new GameFragment();
         Bundle bundle = new Bundle();

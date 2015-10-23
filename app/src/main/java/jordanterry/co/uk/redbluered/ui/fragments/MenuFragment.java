@@ -25,12 +25,26 @@ public class MenuFragment extends Fragment implements MenuView {
 
     public static final String TAG = MenuFragment.class.getSimpleName();
 
+
+    /**
+     * A {@link Button} the play button.
+     */
     @Bind(R.id.play_button) Button mPlayButton;
 
+    /**
+     * The {@link OnPlayClicked} listener for interactions within the game.
+     */
     private OnPlayClicked mOnPlayClicked;
 
+    /**
+     * <p>The {@link MenuPresenter}.</p>
+     */
     private MenuPresenter mMenuPresenter;
 
+    /**
+     * <p>Create a new instance of the MenuFragment.</p>
+     * @return
+     */
     public static MenuFragment newInstance() {
         MenuFragment fragment = new MenuFragment();
         Bundle bundle = new Bundle();
@@ -63,10 +77,9 @@ public class MenuFragment extends Fragment implements MenuView {
         }
     }
 
-
-
     @OnClick(R.id.play_button)
     public void playGame() {
         mOnPlayClicked.onPlayClicked();
     }
+
 }
