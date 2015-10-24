@@ -18,7 +18,7 @@ public class GameTimerImpl extends Thread implements GameTimer {
     /**
      * <p>The max frames per second for the game.</p>
      */
-    private final static int MAX_FPS = 50;
+    private final static int MAX_FPS = 60;
 
     /**
      * <p>The length of a frame.</p>

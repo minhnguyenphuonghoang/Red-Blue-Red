@@ -60,8 +60,13 @@ public class Text extends BaseShape {
     }
 
     @Override
-    public boolean isTouch(float x, float y) {
-        return false;
+    public void isTouch(float x, float y) {
+
+    }
+
+    @Override
+    public void update() {
+
     }
 
 

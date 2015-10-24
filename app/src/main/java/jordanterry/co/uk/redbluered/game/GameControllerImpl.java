@@ -1,19 +1,17 @@
 package jordanterry.co.uk.redbluered.game;
 
 import android.content.Context;
-import android.content.Intent;
 
 import java.util.ArrayList;
-
-import javax.inject.Inject;
 
 import jordanterry.co.uk.redbluered.R;
 import jordanterry.co.uk.redbluered.game.models.GameEnvironment;
 import jordanterry.co.uk.redbluered.game.models.GameObject;
+import jordanterry.co.uk.redbluered.game.models.Rectangle;
 import jordanterry.co.uk.redbluered.game.models.Square;
 import jordanterry.co.uk.redbluered.game.models.Steps;
 import jordanterry.co.uk.redbluered.game.models.Text;
-import jordanterry.co.uk.redbluered.ui.activities.MenuActivity;
+import jordanterry.co.uk.redbluered.ui.presenters.GameJourneyPresenter;
 
 
 /**
@@ -26,7 +24,15 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
     /**
      * <p>The Context of the game.</p>
      */
-    @Inject Context mContext;
+    private Context mContext;
+
+
+    /**
+     * <p>The background of the game. Will be used to draw the background colour. Rather than
+     * drawing onto the Canvas.</p>
+     */
+    private GameObject mBackgroundRectangle;
+
 
     /**
      * <p>The Blue coloured square.</p>
@@ -86,7 +92,7 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
     /**
      * <p>The duration of time a step will be displayed for.</p>
      */
-    private static final long STEP_DISPLAY_TIME = 1000;
+    private static final long STEP_DISPLAY_TIME = 800;
 
     /**
      * <p>The duration of time the swapping between a step will be delayed for.</p>
@@ -108,10 +114,20 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
      */
     private boolean isReady = false;
 
-    @Inject
-    public GameControllerImpl(Context context) {
+
+    /**
+     * <p>The Game Journey Presenter.</p>
+     */
+    private GameJourneyPresenter mGameJourneyPresenter;
+
+
+
+
+    public GameControllerImpl(Context context, GameJourneyPresenter gameJourneyPresenter) {
+        mContext = context;
         mGameSurface = new GamePanel(context, this);
         mGameTimer = new GameTimerImpl(this);
+        mGameJourneyPresenter = gameJourneyPresenter;
     }
 
     @Override
@@ -132,17 +148,13 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
 
     @Override
     public void onGameOver() {
-        Intent intent = new Intent(mContext, MenuActivity.class);
-        mContext.startActivity(intent);
+        mGameJourneyPresenter.gameOver();
     }
 
     @Override
     public void onClick(float x, float y) {
-        if(mBlueSquare.isTouch(x, y)) {
-            checkUserClick(GameColours.BLUE);
-        } else if(mRedSquare.isTouch(x, y)) {
-            checkUserClick(GameColours.RED);
-        }
+        mBlueSquare.isTouch(x, y);
+        mRedSquare.isTouch(x, y);
     }
 
     @Override
@@ -154,8 +166,23 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
         float height = gameEnvironment.getHeight();
         float squareWidth = width * .25f;
         float squareHalf = squareWidth * .5f;
-        mRedSquare = new Square((width * .25f) - squareHalf, (height * .6f) - squareHalf, squareWidth, GameColours.RED);
-        mBlueSquare = new Square((width * .75f) - squareHalf, (height * .6f) - squareHalf, squareWidth, GameColours.BLUE);
+        mBackgroundRectangle = new Rectangle(0, 0, gameEnvironment.getWidth(),
+                gameEnvironment.getHeight(), GameColours.GREY);
+        mRedSquare = new Square((width * .25f) - squareHalf, (height * .6f) - squareHalf, squareWidth,
+                GameColours.RED, GameColours.DARK_RED, new Square.OnTouchListener() {
+            @Override
+            public void onTouch() {
+                // checkUserClick(GameColours.RED);
+            }
+        });
+
+        mBlueSquare = new Square((width * .75f) - squareHalf, (height * .6f) - squareHalf, squareWidth,
+                GameColours.BLUE, GameColours.DARK_BLUE, new Square.OnTouchListener() {
+            @Override
+            public void onTouch() {
+                // checkUserClick(GameColours.BLUE);
+            }
+        });
         float textWidth = Text.measureText(String.valueOf(mLevel));
         float textSize = mContext.getResources().getDimension(R.dimen.level_text_size);
         mLevelText = new Text((width * .5f) - (textWidth * .5f), height * .25f, String.valueOf(mLevel), GameColours.RED, textSize);
@@ -166,20 +193,20 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
 
     @Override
     public void updateState() {
+
         if(isReady) {
+            mBlueSquare.update();
+            mRedSquare.update();
             float textWidth = Text.measureText(String.valueOf(mLevel));
             mLevelText.setText(String.valueOf(mLevel));
             mLevelText.setX((mGameEnvironment.getWidth() * .5f) - (textWidth * .5f));
-            mBlueSquare.setVisibility(true);
-            mRedSquare.setVisibility(true);
+
             if(isAddStep) {
-                if(System.currentTimeMillis() < mDelayTime) {
-                    mBlueSquare.setVisibility(false);
-                    mRedSquare.setVisibility(false);
-                } else {
+                long currentTime = System.currentTimeMillis();
+                if(currentTime > mDelayTime) {
                     mDelayTime = 0;
                     for (int i = 0; i < mGameColours.getSteps().size(); i++) {
-                        if(i == mDisplayStep && System.currentTimeMillis() < mChangeStepTime) {
+                        if(i == mDisplayStep && currentTime < mChangeStepTime) {
                             if(mGameColours.getColour(i) == GameColours.RED) {
                                 mRedSquare.setVisibility(true);
                                 mBlueSquare.setVisibility(false);
@@ -187,25 +214,34 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
                                 mBlueSquare.setVisibility(true);
                                 mRedSquare.setVisibility(false);
                             }
-                        } else if(i == mDisplayStep && System.currentTimeMillis() > mChangeStepTime) {
+                        } else if(i == mDisplayStep && currentTime > mChangeStepTime) {
                             mBlueSquare.setVisibility(false);
                             mRedSquare.setVisibility(false);
-                            mDelayTime = System.currentTimeMillis() + STEP_DELAY_TIME;
-                            mChangeStepTime = System.currentTimeMillis() + STEP_DISPLAY_TIME + STEP_DELAY_TIME;
+                            mDelayTime = currentTime + STEP_DELAY_TIME;
+                            mChangeStepTime = currentTime + STEP_DISPLAY_TIME
+                                    + STEP_DELAY_TIME;
                             mDisplayStep++;
-                        } else if(i == mDisplayStep - 1 && i == mGameColours.getSteps().size() - 1 && mChangeStepTime < System.currentTimeMillis()) {
+                        } else if(i == mDisplayStep - 1 && i == mGameColours.getSteps().size() - 1
+                                && mChangeStepTime < currentTime) {
                             isAddStep = false;
                         }
                     }
                 }
+
+            } else {
+                mBlueSquare.setVisibility(true);
+                mRedSquare.setVisibility(true);
             }
+
         }
+
     }
 
     @Override
     public void drawState() {
         ArrayList<GameObject> gameObjects = new ArrayList<>();
 
+        gameObjects.add(mBackgroundRectangle);
         gameObjects.add(mRedSquare);
         gameObjects.add(mBlueSquare);
         gameObjects.add(mLevelText);

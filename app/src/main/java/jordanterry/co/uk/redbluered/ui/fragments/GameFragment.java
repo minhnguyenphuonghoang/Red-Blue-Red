@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import jordanterry.co.uk.redbluered.ui.presenters.GamePresenter;
-import jordanterry.co.uk.redbluered.ui.presenters.GamePresenterImpl;
 import jordanterry.co.uk.redbluered.ui.views.GameView;
 
 /**
@@ -38,7 +37,7 @@ public class GameFragment extends Fragment implements GameView {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mGamePresenter = new GamePresenterImpl(getContext(), this);
+        // mGamePresenter = new GamePresenterImpl(getContext(), this);
     }
 
     @Nullable
@@ -52,5 +51,10 @@ public class GameFragment extends Fragment implements GameView {
     public void onStop() {
         super.onStop();
         mGamePresenter.onStop();
+    }
+
+    @Override
+    public void onGameOver() {
+
     }
 }

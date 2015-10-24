@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.SurfaceView;
 
 import jordanterry.co.uk.redbluered.game.GameController;
-import jordanterry.co.uk.redbluered.game.GameControllerImpl;
 import jordanterry.co.uk.redbluered.ui.views.GameView;
 
 /**
@@ -31,11 +30,10 @@ public class GamePresenterImpl implements GamePresenter {
 
     /**
      * <p>Constructor providing a {@link Context} and the {@link GameView}.</p>
-     * @param context
      * @param gameView
      */
-    public GamePresenterImpl(Context context, GameView gameView) {
-        mGameController = new GameControllerImpl(context);
+    public GamePresenterImpl(GameView gameView, GameController gameController) {
+        mGameController = gameController;
         mGameView = gameView;
     }
 

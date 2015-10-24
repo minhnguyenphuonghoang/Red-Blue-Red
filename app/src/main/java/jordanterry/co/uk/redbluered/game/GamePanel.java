@@ -2,7 +2,6 @@ package jordanterry.co.uk.redbluered.game;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -38,7 +37,7 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
     private List<GameObject> mGameObjects;
 
     /**
-     * <p>Construvtor used to provide the {@link Context} and the
+     * <p>Constructor used to provide the {@link Context} and the
      * {@link jordanterry.co.uk.redbluered.game.GamePanel.OnGameInteraction} to the {@link SurfaceView}.</p>
      * @param context
      * @param onGameInteraction
@@ -62,7 +61,6 @@ public class GamePanel extends SurfaceView implements View.OnTouchListener, Surf
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-        canvas.drawColor(Color.WHITE);
         if(mGameObjects != null) {
             for (GameObject gameObject : mGameObjects) {
                 gameObject.draw(canvas);

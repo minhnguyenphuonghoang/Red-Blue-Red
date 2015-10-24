@@ -9,5 +9,5 @@ import jordanterry.co.uk.redbluered.game.modules.GameModule;
  */
 @Component(modules = {GameModule.class})
 public interface GameComponent {
-    GameControllerImpl provideGameController();
+    // GameControllerImpl provideGameController();
 }

@@ -57,10 +57,15 @@ public interface GameObject {
 
     /**
      * <p>Should return true if the touch is within the bounds of the GameObject.</p>
-     * @param x
-     * @param y
-     * @return
+     * @param x x-coordinate of the touch
+     * @param y y-coordinate of the touch
      */
-    boolean isTouch(float x, float y);
+    void isTouch(float x, float y);
+
+    /**
+     * <p>Called to update the state of the GameObject.</p>
+     */
+    void update();
+
 
 }
