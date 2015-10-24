@@ -2,6 +2,7 @@ package jordanterry.co.uk.redbluered.game.models;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 
 /**
  * <p>The Square is the main shape that will be used in the Game.</p>
@@ -33,6 +34,17 @@ public class Square extends BaseShape {
 
     private static long ANIMATION_DURATION = 325;
 
+
+    private long mDarkTransitionTime = 0;
+    private long mDarkTransitionStart = 0;
+    private long mNormalTransitionTime = 0;
+    private long mNormalTransitionStart = 0;
+    private boolean isTransitionFinished = false;
+
+
+    private float mTouchX;
+    private float mTouchY;
+
     public Square(float x, float y, float edge, int colour, int darkColour, OnTouchListener onTouchListener) {
         super(x, y);
         mEdge = edge;
@@ -63,31 +75,35 @@ public class Square extends BaseShape {
     @Override
     public void draw(Canvas canvas) {
         if(isVisible()) {
-            canvas.drawRect(getX(), getY(), getX() + mEdge, getY() + mEdge, mBackgroundColour);
-            float darkX = getX() + (mEdge * .5f);
-            float darkY = getY() + (mEdge * .5f);
-            float halfDarkEdge = mTouchDarkEdge * .5f;
-            float halfNormalEdge = mTouchNormalEdge * .5f;
-            canvas.drawRect(darkX - halfDarkEdge, darkY - halfDarkEdge, darkX + halfDarkEdge, darkY + halfDarkEdge, mDarkBackgroundColour);
-            canvas.drawRect(darkX - halfNormalEdge, darkY - halfNormalEdge, darkX + halfNormalEdge, darkY + halfNormalEdge, mBackgroundColour);
+            Rect mainRect = new Rect((int) getX(), (int) getY(), (int) (getX() + mEdge), (int) (getY() + mEdge));
+            canvas.drawRect(mainRect, mBackgroundColour);
+            if(isTouched) {
+                float darkX = getX() + mTouchX;
+                float darkY = getY() + mTouchY;
+                float halfDarkEdge = mTouchDarkEdge;
+                float halfNormalEdge = mTouchNormalEdge;
+
+                canvas.save();
+                canvas.clipRect(mainRect);
+                canvas.drawRect(darkX - halfDarkEdge, darkY - halfDarkEdge, darkX + halfDarkEdge, darkY + halfDarkEdge, mDarkBackgroundColour);
+                canvas.drawRect(darkX - halfNormalEdge, darkY - halfNormalEdge, darkX + halfNormalEdge, darkY + halfNormalEdge, mBackgroundColour);
+                canvas.restore();
+
+            }
         }
     }
 
     @Override
     public void isTouch(float x, float y) {
-        if(!isTouched) {
-            if(x > getX() && x < getX() + mEdge && y > getY() && y < getY() + mEdge) {
-                isTouched = true;
-                mOnTouchListener.onTouch();
-            }
+        if(x > getX() && x < getX() + mEdge && y > getY() && y < getY() + mEdge) {
+            mTouchX = x - getX();
+            mTouchY = y - getY();
+            isTouched = true;
+            mOnTouchListener.onTouch();
         }
+
     }
 
-    private long mDarkTransitionTime = 0;
-    private long mDarkTransitionStart = 0;
-    private long mNormalTransitionTime = 0;
-    private long mNormalTransitionStart = 0;
-    private boolean isTransitionFinished = false;
     @Override
     public void update() {
         if(isTouched) {
@@ -136,7 +152,7 @@ public class Square extends BaseShape {
      */
     private float easing(float t, float b, float c, long d) {
         t /= d;
-        float p = c*t*t*t + b;
+        float p = c * t * t * t + b;
         if(p > c) return c;
         return p;
     }

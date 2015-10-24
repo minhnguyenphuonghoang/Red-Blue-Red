@@ -168,19 +168,19 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
         float squareHalf = squareWidth * .5f;
         mBackgroundRectangle = new Rectangle(0, 0, gameEnvironment.getWidth(),
                 gameEnvironment.getHeight(), GameColours.GREY);
-        mRedSquare = new Square((width * .25f) - squareHalf, (height * .6f) - squareHalf, squareWidth,
+        mRedSquare = new Square((width * .25f) - squareHalf, (height * .5f) - squareHalf, squareWidth,
                 GameColours.RED, GameColours.DARK_RED, new Square.OnTouchListener() {
             @Override
             public void onTouch() {
-                // checkUserClick(GameColours.RED);
+                checkUserClick(GameColours.RED);
             }
         });
 
-        mBlueSquare = new Square((width * .75f) - squareHalf, (height * .6f) - squareHalf, squareWidth,
+        mBlueSquare = new Square((width * .75f) - squareHalf, (height * .5f) - squareHalf, squareWidth,
                 GameColours.BLUE, GameColours.DARK_BLUE, new Square.OnTouchListener() {
             @Override
             public void onTouch() {
-                // checkUserClick(GameColours.BLUE);
+                checkUserClick(GameColours.BLUE);
             }
         });
         float textWidth = Text.measureText(String.valueOf(mLevel));
