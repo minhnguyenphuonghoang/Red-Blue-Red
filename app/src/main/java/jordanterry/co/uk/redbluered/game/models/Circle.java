@@ -2,16 +2,16 @@ package jordanterry.co.uk.redbluered.game.models;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Rect;
+import android.graphics.Path;
 
 import jordanterry.co.uk.redbluered.helpers.EasingHelpers;
 
 /**
  * <p>The Square is the main shape that will be used in the Game.</p>
  */
-public class Square extends BaseShape {
+public class Circle extends BaseShape {
 
-    public static final String TAG = Square.class.getSimpleName();
+    public static final String TAG = Circle.class.getSimpleName();
 
     /**
      * <p>The {@link Paint} to be used when drawing the Square to the screen.</p>
@@ -21,7 +21,7 @@ public class Square extends BaseShape {
     /**
      * <p>The size of the edges of the Square.</p>
      */
-    private float mEdge;
+    private float mRadius;
 
     private OnTouchListener mOnTouchListener;
 
@@ -34,7 +34,7 @@ public class Square extends BaseShape {
 
     private Paint mDarkBackgroundColour;
 
-    private static long ANIMATION_DURATION = 325;
+    private static long ANIMATION_DURATION = 500;
 
 
     private long mDarkTransitionTime = 0;
@@ -43,13 +43,16 @@ public class Square extends BaseShape {
     private long mNormalTransitionStart = 0;
     private boolean isTransitionFinished = false;
 
+    private Path mPath;
+
+    private float mClickSize = 0;
 
     private float mTouchX;
     private float mTouchY;
 
-    public Square(float x, float y, float edge, int colour, int darkColour, OnTouchListener onTouchListener) {
+    public Circle(float x, float y, float radius, int colour, int darkColour, OnTouchListener onTouchListener) {
         super(x, y);
-        mEdge = edge;
+        mRadius = radius;
         mTouchDarkEdge = 0;
         mTouchNormalEdge = 0;
         mDarkBackgroundColour = new Paint();
@@ -57,15 +60,18 @@ public class Square extends BaseShape {
         mBackgroundColour = new Paint();
         mBackgroundColour.setColor(colour);
         mOnTouchListener = onTouchListener;
+
+        mPath = new Path();
+        mPath.addCircle(getX(), getY(), mRadius, Path.Direction.CW);
     }
 
     /**
      * <p>Set the edge of the square outside of the constructor.</p>
      * <p>Could be used if the size of the Square is going to be changed.</p>
-     * @param edge
+     * @param radius
      */
-    public void setEdge(float edge) {
-        mEdge = edge;
+    public void setRadius(float radius) {
+        mRadius = radius;
     }
 
 
@@ -77,18 +83,15 @@ public class Square extends BaseShape {
     @Override
     public void draw(Canvas canvas) {
         if(isVisible()) {
-            Rect mainRect = new Rect((int) getX(), (int) getY(), (int) (getX() + mEdge), (int) (getY() + mEdge));
-            canvas.drawRect(mainRect, mBackgroundColour);
-            if(isTouched) {
-                float darkX = getX() + mTouchX;
-                float darkY = getY() + mTouchY;
-                float halfDarkEdge = mTouchDarkEdge;
-                float halfNormalEdge = mTouchNormalEdge;
 
+            canvas.drawCircle(getX(), getY(), mRadius, mBackgroundColour);
+            if(isTouched) {
                 canvas.save();
-                canvas.clipRect(mainRect);
-                canvas.drawRect(darkX - halfDarkEdge, darkY - halfDarkEdge, darkX + halfDarkEdge, darkY + halfDarkEdge, mDarkBackgroundColour);
-                canvas.drawRect(darkX - halfNormalEdge, darkY - halfNormalEdge, darkX + halfNormalEdge, darkY + halfNormalEdge, mBackgroundColour);
+                canvas.clipPath(mPath);
+
+                canvas.drawCircle(mTouchX, mTouchY, mTouchDarkEdge, mDarkBackgroundColour);
+                canvas.drawCircle(mTouchX, mTouchY, mTouchNormalEdge, mBackgroundColour);
+
                 canvas.restore();
 
             }
@@ -97,11 +100,22 @@ public class Square extends BaseShape {
 
     @Override
     public void isTouch(float x, float y) {
-        if(x > getX() && x < getX() + mEdge && y > getY() && y < getY() + mEdge) {
-            mTouchX = x - getX();
-            mTouchY = y - getY();
-            isTouched = true;
-            mOnTouchListener.onTouch(mBackgroundColour.getColor());
+
+        if(!isTouched) {
+            if(((getX() - x) * (getX() - x)) + ((getY() - y) * (getY() - y)) < mRadius * mRadius) {
+                mTouchX = x;
+                mTouchY = y;
+
+                if(x < getX()) {
+                    mClickSize = Math.abs((mRadius - x)) * 2;
+                } else {
+                    mClickSize = Math.abs((x - mRadius)) * 2;
+                }
+
+                // float expandSize = mTouchX < expandSize
+                isTouched = true;
+                mOnTouchListener.onTouch(mBackgroundColour.getColor());
+            }
         }
 
     }
@@ -109,20 +123,20 @@ public class Square extends BaseShape {
     @Override
     public void update() {
         if(isTouched) {
-            if(mTouchDarkEdge < mEdge) {
+            if(mTouchDarkEdge < mRadius) {
                 if(mDarkTransitionStart == 0) {
                     mDarkTransitionStart = System.currentTimeMillis();
                 }
-                mTouchDarkEdge = EasingHelpers.linear(mDarkTransitionTime, 0, mEdge, ANIMATION_DURATION);
+                mTouchDarkEdge = EasingHelpers.linear(mDarkTransitionTime, 0, mClickSize, ANIMATION_DURATION);
                 mDarkTransitionTime = System.currentTimeMillis() - mDarkTransitionStart;
             }
 
-            if(mTouchDarkEdge > mEdge * .4f) {
-                if(mTouchNormalEdge < mEdge) {
+            if(mTouchDarkEdge > mRadius * .4f) {
+                if(mTouchNormalEdge < mRadius) {
                     if(mNormalTransitionStart == 0) {
                         mNormalTransitionStart = System.currentTimeMillis();
                     }
-                    mTouchNormalEdge = EasingHelpers.linear(mNormalTransitionTime, 0, mEdge, ANIMATION_DURATION);
+                    mTouchNormalEdge = EasingHelpers.linear(mNormalTransitionTime, 0, mClickSize, ANIMATION_DURATION);
                     mNormalTransitionTime = System.currentTimeMillis() - mNormalTransitionStart;
                 } else {
                     isTransitionFinished = true;

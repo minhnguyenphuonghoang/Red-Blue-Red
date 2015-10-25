@@ -5,6 +5,7 @@ import android.content.Context;
 import java.util.ArrayList;
 
 import jordanterry.co.uk.redbluered.R;
+import jordanterry.co.uk.redbluered.game.models.Circle;
 import jordanterry.co.uk.redbluered.game.models.GameEnvironment;
 import jordanterry.co.uk.redbluered.game.models.GameObject;
 import jordanterry.co.uk.redbluered.game.models.Rectangle;
@@ -165,15 +166,25 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
         mLevel = 0;
         float width = gameEnvironment.getWidth();
         float height = gameEnvironment.getHeight();
-        float squareWidth = width * .25f;
+        float squareWidth = width * .125f;
         float squareHalf = squareWidth * .5f;
         mBackgroundRectangle = new Rectangle(0, 0, gameEnvironment.getWidth(),
                 gameEnvironment.getHeight(), GameColours.GREY);
-        mRedSquare = new Square((width * .25f) - squareHalf, (height * .5f) - squareHalf, squareWidth,
-                GameColours.RED, GameColours.DARK_RED, this);
+        mRedSquare = new Circle((width * .25f), (height * .5f), squareWidth,
+                GameColours.RED, GameColours.DARK_RED, new Circle.OnTouchListener() {
+            @Override
+            public void onTouch(int colour) {
+                // checkUserClick(colour);
+            }
+        });
 
-        mBlueSquare = new Square((width * .75f) - squareHalf, (height * .5f) - squareHalf, squareWidth,
-                GameColours.BLUE, GameColours.DARK_BLUE, this);
+        mBlueSquare = new Circle((width * .75f), (height * .5f), squareWidth,
+                GameColours.BLUE, GameColours.DARK_BLUE, new Circle.OnTouchListener() {
+            @Override
+            public void onTouch(int colour) {
+                // checkUserClick(colour);
+            }
+        });
         float textWidth = Text.measureText(String.valueOf(mLevel));
         float textSize = mContext.getResources().getDimension(R.dimen.level_text_size);
         mLevelText = new Text((width * .5f) - (textWidth * .5f), height * .25f, String.valueOf(mLevel), GameColours.RED, textSize);
