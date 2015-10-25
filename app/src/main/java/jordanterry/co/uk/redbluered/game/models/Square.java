@@ -99,7 +99,7 @@ public class Square extends BaseShape {
             mTouchX = x - getX();
             mTouchY = y - getY();
             isTouched = true;
-            mOnTouchListener.onTouch();
+            mOnTouchListener.onTouch(mBackgroundColour.getColor());
         }
 
     }
@@ -159,7 +159,7 @@ public class Square extends BaseShape {
 
 
     public interface OnTouchListener {
-        void onTouch();
+        void onTouch(int colour);
     }
 
 }

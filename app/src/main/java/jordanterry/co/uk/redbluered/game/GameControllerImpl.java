@@ -9,6 +9,7 @@ import jordanterry.co.uk.redbluered.game.models.GameEnvironment;
 import jordanterry.co.uk.redbluered.game.models.GameObject;
 import jordanterry.co.uk.redbluered.game.models.Rectangle;
 import jordanterry.co.uk.redbluered.game.models.Square;
+import jordanterry.co.uk.redbluered.game.models.Square.OnTouchListener;
 import jordanterry.co.uk.redbluered.game.models.Steps;
 import jordanterry.co.uk.redbluered.game.models.Text;
 import jordanterry.co.uk.redbluered.ui.presenters.GameJourneyPresenter;
@@ -17,7 +18,7 @@ import jordanterry.co.uk.redbluered.ui.presenters.GameJourneyPresenter;
 /**
  * <p>An implementation of the {@link GameController} interface.</p>
  */
-public class GameControllerImpl implements GamePanel.OnGameInteraction, GameController {
+public class GameControllerImpl implements GamePanel.OnGameInteraction, GameController, OnTouchListener {
 
     public static final String TAG = GameControllerImpl.class.getSimpleName();
 
@@ -169,20 +170,10 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
         mBackgroundRectangle = new Rectangle(0, 0, gameEnvironment.getWidth(),
                 gameEnvironment.getHeight(), GameColours.GREY);
         mRedSquare = new Square((width * .25f) - squareHalf, (height * .5f) - squareHalf, squareWidth,
-                GameColours.RED, GameColours.DARK_RED, new Square.OnTouchListener() {
-            @Override
-            public void onTouch() {
-                checkUserClick(GameColours.RED);
-            }
-        });
+                GameColours.RED, GameColours.DARK_RED, this);
 
         mBlueSquare = new Square((width * .75f) - squareHalf, (height * .5f) - squareHalf, squareWidth,
-                GameColours.BLUE, GameColours.DARK_BLUE, new Square.OnTouchListener() {
-            @Override
-            public void onTouch() {
-                checkUserClick(GameColours.BLUE);
-            }
-        });
+                GameColours.BLUE, GameColours.DARK_BLUE, this);
         float textWidth = Text.measureText(String.valueOf(mLevel));
         float textSize = mContext.getResources().getDimension(R.dimen.level_text_size);
         mLevelText = new Text((width * .5f) - (textWidth * .5f), height * .25f, String.valueOf(mLevel), GameColours.RED, textSize);
@@ -293,4 +284,8 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
     }
 
 
+    @Override
+    public void onTouch(int colour) {
+        checkUserClick(colour);
+    }
 }
