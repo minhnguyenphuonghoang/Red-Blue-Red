@@ -167,7 +167,6 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
         float width = gameEnvironment.getWidth();
         float height = gameEnvironment.getHeight();
         float squareWidth = width * .125f;
-        float squareHalf = squareWidth * .5f;
         mBackgroundRectangle = new Rectangle(0, 0, gameEnvironment.getWidth(),
                 gameEnvironment.getHeight(), GameColours.GREY);
         mRedSquare = new Circle((width * .25f), (height * .5f), squareWidth,
@@ -185,13 +184,18 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
                 // checkUserClick(colour);
             }
         });
-        float textWidth = Text.measureText(String.valueOf(mLevel));
         float textSize = mContext.getResources().getDimension(R.dimen.level_text_size);
-        mLevelText = new Text((width * .5f) - (textWidth * .5f), height * .5f, String.valueOf(mLevel), GameColours.RED, textSize);
+        mLevelText = new Text((width * .5f), height * .5f, String.valueOf(mLevel), GameColours.RED, textSize);
+
+        float textWidth = mLevelText.measureText();
+        mLevelText.setX((width * .5f) - (textWidth * .5f));
         addStep();
         start();
     }
 
+    private long mLevelDisplay = 0;
+    private boolean isLevelDisplayed = false;
+    private static final long DISPLAY_LEVEL_TIME = 1250;
 
     @Override
     public void updateState() {
@@ -201,34 +205,48 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
             mRedSquare.update();
 
             if(isAddStep) {
-                float textWidth = Text.measureText(String.valueOf(mLevel));
-                mLevelText.setText(String.valueOf(mLevel));
-                mLevelText.setX((mGameEnvironment.getWidth() * .5f) - (textWidth * .5f));
-                mLevelText.setVisibility(true);
-                long currentTime = System.currentTimeMillis();
-                if(currentTime > mDelayTime) {
-                    mDelayTime = 0;
-                    for (int i = 0; i < mGameColours.getSteps().size(); i++) {
-                        if(i == mDisplayStep && currentTime < mChangeStepTime) {
-                            if(mGameColours.getColour(i) == GameColours.RED) {
-                                mRedSquare.setVisibility(true);
+                if(!isLevelDisplayed && mLevelDisplay == 0) {
+                    mLevelDisplay = System.currentTimeMillis() + DISPLAY_LEVEL_TIME;
+                }
+                if(!isLevelDisplayed) {
+                    if(System.currentTimeMillis() < mLevelDisplay) {
+                        mLevelText.setText(String.valueOf(mLevel));
+                        float textWidth = mLevelText.measureText();
+                        mLevelText.setX((mGameEnvironment.getWidth() * .5f) - (textWidth * .5f));
+                        mLevelText.setVisibility(true);
+                    } else {
+                        isLevelDisplayed = true;
+                        mLevelDisplay = 0;
+                    }
+                } else {
+
+
+                    long currentTime = System.currentTimeMillis();
+                    if(currentTime > mDelayTime) {
+                        mDelayTime = 0;
+                        for (int i = 0; i < mGameColours.getSteps().size(); i++) {
+                            if(i == mDisplayStep && currentTime < mChangeStepTime) {
+                                if(mGameColours.getColour(i) == GameColours.RED) {
+                                    mRedSquare.setVisibility(true);
+                                    mBlueSquare.setVisibility(false);
+                                } else if(mGameColours.getColour(i) == GameColours.BLUE) {
+                                    mBlueSquare.setVisibility(true);
+                                    mRedSquare.setVisibility(false);
+                                }
+                            } else if(i == mDisplayStep && currentTime > mChangeStepTime) {
                                 mBlueSquare.setVisibility(false);
-                            } else if(mGameColours.getColour(i) == GameColours.BLUE) {
-                                mBlueSquare.setVisibility(true);
                                 mRedSquare.setVisibility(false);
+                                mDelayTime = currentTime + STEP_DELAY_TIME;
+                                mChangeStepTime = currentTime + STEP_DISPLAY_TIME
+                                        + STEP_DELAY_TIME;
+                                mDisplayStep++;
+                            } else if(i == mDisplayStep - 1 && i == mGameColours.getSteps().size() - 1
+                                    && mChangeStepTime < currentTime) {
+                                isAddStep = false;
                             }
-                        } else if(i == mDisplayStep && currentTime > mChangeStepTime) {
-                            mBlueSquare.setVisibility(false);
-                            mRedSquare.setVisibility(false);
-                            mDelayTime = currentTime + STEP_DELAY_TIME;
-                            mChangeStepTime = currentTime + STEP_DISPLAY_TIME
-                                    + STEP_DELAY_TIME;
-                            mDisplayStep++;
-                        } else if(i == mDisplayStep - 1 && i == mGameColours.getSteps().size() - 1
-                                && mChangeStepTime < currentTime) {
-                            isAddStep = false;
                         }
                     }
+
                 }
 
             } else {

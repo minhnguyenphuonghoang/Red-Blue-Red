@@ -72,13 +72,10 @@ public class Text extends BaseShape {
 
     /**
      * <p>This is used to measure the size of the text when it is being drawn to the screen.</p>
-     * TODO: Make non-static and use the Paint within the object to draw the text accurately.
-     * @param text
      * @return
      */
-    public static float measureText(String text) {
-        Paint paint = new Paint();
-        return paint.measureText(text);
+    public float measureText() {
+        return mPaint.measureText(mText);
     }
 
 }

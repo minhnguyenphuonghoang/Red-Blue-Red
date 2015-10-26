@@ -106,13 +106,8 @@ public class Circle extends BaseShape {
                 mTouchX = x;
                 mTouchY = y;
 
-                if(x < getX()) {
-                    mClickSize = Math.abs((mRadius - x)) * 2;
-                } else {
-                    mClickSize = Math.abs((x - mRadius)) * 2;
-                }
+                mClickSize = mRadius * 3;
 
-                // float expandSize = mTouchX < expandSize
                 isTouched = true;
                 mOnTouchListener.onTouch(mBackgroundColour.getColor());
             }
@@ -123,26 +118,29 @@ public class Circle extends BaseShape {
     @Override
     public void update() {
         if(isTouched) {
-            if(mTouchDarkEdge < mRadius) {
-                if(mDarkTransitionStart == 0) {
-                    mDarkTransitionStart = System.currentTimeMillis();
-                }
+
+            if (mDarkTransitionStart == 0) {
+                mDarkTransitionStart = System.currentTimeMillis();
+            }
+            if (mDarkTransitionStart != 0 && mDarkTransitionStart + ANIMATION_DURATION > System.currentTimeMillis()) {
                 mTouchDarkEdge = EasingHelpers.linear(mDarkTransitionTime, 0, mClickSize, ANIMATION_DURATION);
                 mDarkTransitionTime = System.currentTimeMillis() - mDarkTransitionStart;
             }
 
-            if(mTouchDarkEdge > mRadius * .4f) {
-                if(mTouchNormalEdge < mRadius) {
-                    if(mNormalTransitionStart == 0) {
-                        mNormalTransitionStart = System.currentTimeMillis();
-                    }
+
+            if(mTouchDarkEdge > mRadius * .2f) {
+
+                if(mNormalTransitionStart == 0) {
+                    mNormalTransitionStart = System.currentTimeMillis();
+                }
+
+                if (mNormalTransitionStart != 0 && mNormalTransitionStart + ANIMATION_DURATION > System.currentTimeMillis()) {
                     mTouchNormalEdge = EasingHelpers.linear(mNormalTransitionTime, 0, mClickSize, ANIMATION_DURATION);
                     mNormalTransitionTime = System.currentTimeMillis() - mNormalTransitionStart;
                 } else {
                     isTransitionFinished = true;
                 }
             }
-
 
             if(isTransitionFinished) {
                 isTouched = false;
