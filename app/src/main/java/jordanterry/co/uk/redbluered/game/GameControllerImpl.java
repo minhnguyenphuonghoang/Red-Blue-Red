@@ -1,6 +1,7 @@
 package jordanterry.co.uk.redbluered.game;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -124,6 +125,9 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
 
 
 
+    private long mLevelDisplay = 0;
+    private boolean isDisplayLevel = false;
+    private static final long DISPLAY_LEVEL_TIME = 1250;
 
     public GameControllerImpl(Context context, GameJourneyPresenter gameJourneyPresenter) {
         mContext = context;
@@ -173,7 +177,7 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
                 GameColours.RED, GameColours.DARK_RED, new Circle.OnTouchListener() {
             @Override
             public void onTouch(int colour) {
-                // checkUserClick(colour);
+                checkUserClick(colour);
             }
         });
 
@@ -181,7 +185,7 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
                 GameColours.BLUE, GameColours.DARK_BLUE, new Circle.OnTouchListener() {
             @Override
             public void onTouch(int colour) {
-                // checkUserClick(colour);
+                checkUserClick(colour);
             }
         });
         float textSize = mContext.getResources().getDimension(R.dimen.level_text_size);
@@ -193,61 +197,92 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
         start();
     }
 
-    private long mLevelDisplay = 0;
-    private boolean isLevelDisplayed = false;
-    private static final long DISPLAY_LEVEL_TIME = 1250;
+    private boolean isDisplaySteps = false;
+    private boolean isDisplayingStep = false;
+    private boolean isTimeSet = false;
 
     @Override
     public void updateState() {
 
         if(isReady) {
+            long currentTime = System.currentTimeMillis();
             mBlueSquare.update();
             mRedSquare.update();
 
             if(isAddStep) {
-                if(!isLevelDisplayed && mLevelDisplay == 0) {
-                    mLevelDisplay = System.currentTimeMillis() + DISPLAY_LEVEL_TIME;
-                }
-                if(!isLevelDisplayed) {
-                    if(System.currentTimeMillis() < mLevelDisplay) {
+
+
+
+                if(isDisplayLevel) {
+
+                    if(!isTimeSet) {
+                        Log.e(TAG, "Time set");
+                        mLevelDisplay = currentTime + DISPLAY_LEVEL_TIME;
+                        isTimeSet = true;
+                    }
+
+                    if(currentTime < mLevelDisplay) {
+                        Log.e(TAG, "Display level");
                         mLevelText.setText(String.valueOf(mLevel));
                         float textWidth = mLevelText.measureText();
                         mLevelText.setX((mGameEnvironment.getWidth() * .5f) - (textWidth * .5f));
                         mLevelText.setVisibility(true);
+                        mRedSquare.setVisibility(false);
+                        mBlueSquare.setVisibility(false);
                     } else {
-                        isLevelDisplayed = true;
-                        mLevelDisplay = 0;
-                    }
-                } else {
-
-
-                    long currentTime = System.currentTimeMillis();
-                    if(currentTime > mDelayTime) {
-                        mDelayTime = 0;
-                        for (int i = 0; i < mGameColours.getSteps().size(); i++) {
-                            if(i == mDisplayStep && currentTime < mChangeStepTime) {
-                                if(mGameColours.getColour(i) == GameColours.RED) {
-                                    mRedSquare.setVisibility(true);
-                                    mBlueSquare.setVisibility(false);
-                                } else if(mGameColours.getColour(i) == GameColours.BLUE) {
-                                    mBlueSquare.setVisibility(true);
-                                    mRedSquare.setVisibility(false);
-                                }
-                            } else if(i == mDisplayStep && currentTime > mChangeStepTime) {
-                                mBlueSquare.setVisibility(false);
-                                mRedSquare.setVisibility(false);
-                                mDelayTime = currentTime + STEP_DELAY_TIME;
-                                mChangeStepTime = currentTime + STEP_DISPLAY_TIME
-                                        + STEP_DELAY_TIME;
-                                mDisplayStep++;
-                            } else if(i == mDisplayStep - 1 && i == mGameColours.getSteps().size() - 1
-                                    && mChangeStepTime < currentTime) {
-                                isAddStep = false;
-                            }
-                        }
+                        Log.e(TAG, "Stopped displaying level");
+                        isDisplayLevel = false;
+                        isDisplaySteps = true;
+                        isTimeSet = false;
                     }
 
                 }
+
+
+
+                if(isDisplaySteps) {
+                    Log.e(TAG, "Display steps");
+                    if(currentTime > mDelayTime) {
+                        Log.e(TAG, "In here");
+
+                        mDelayTime = 0;
+                        for (int i = 0; i < mGameColours.getSteps().size(); i++) {
+
+                            if(i == mDisplayStep) {
+                                if(isDisplayingStep) {
+
+                                    if(currentTime < mDelayTime) {
+                                        mRedSquare.setVisibility(false);
+                                        mBlueSquare.setVisibility(false);
+                                        mLevelText.setVisibility(false);
+                                    } else if(currentTime < mChangeStepTime) {
+                                        if(mGameColours.getColour(i) == GameColours.RED) {
+                                            mRedSquare.setVisibility(true);
+                                            mBlueSquare.setVisibility(false);
+
+                                        } else if(mGameColours.getColour(i) == GameColours.BLUE) {
+                                            mRedSquare.setVisibility(false);
+                                            mBlueSquare.setVisibility(true);
+                                        }
+                                        mLevelText.setVisibility(false);
+                                    } else if(i == mGameColours.getSteps().size() - 1 && currentTime > mChangeStepTime) {
+                                        isAddStep = false;
+                                        isDisplaySteps = false;
+                                    }
+
+                                } else {
+                                    isDisplayingStep = true;
+                                    mDelayTime = currentTime + STEP_DELAY_TIME;
+                                    mChangeStepTime = currentTime + STEP_DISPLAY_TIME
+                                            + STEP_DELAY_TIME;
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+
 
             } else {
                 mLevelText.setVisibility(false);
@@ -303,6 +338,8 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
      */
     private void displaySteps() {
         isAddStep = true;
+        isDisplayLevel = true;
+        isDisplaySteps = false;
         mChangeStepTime = System.currentTimeMillis() + STEP_DISPLAY_TIME;
         mDisplayStep = 0;
     }

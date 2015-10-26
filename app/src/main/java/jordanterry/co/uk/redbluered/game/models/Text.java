@@ -56,7 +56,9 @@ public class Text extends BaseShape {
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawText(mText, getX(), getY(), mPaint);
+        if(isVisible()) {
+            canvas.drawText(mText, getX(), getY(), mPaint);
+        }
     }
 
     @Override
