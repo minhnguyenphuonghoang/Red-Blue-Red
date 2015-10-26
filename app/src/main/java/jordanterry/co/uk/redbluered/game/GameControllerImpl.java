@@ -187,7 +187,7 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
         });
         float textWidth = Text.measureText(String.valueOf(mLevel));
         float textSize = mContext.getResources().getDimension(R.dimen.level_text_size);
-        mLevelText = new Text((width * .5f) - (textWidth * .5f), height * .25f, String.valueOf(mLevel), GameColours.RED, textSize);
+        mLevelText = new Text((width * .5f) - (textWidth * .5f), height * .5f, String.valueOf(mLevel), GameColours.RED, textSize);
         addStep();
         start();
     }
@@ -199,11 +199,12 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
         if(isReady) {
             mBlueSquare.update();
             mRedSquare.update();
-            float textWidth = Text.measureText(String.valueOf(mLevel));
-            mLevelText.setText(String.valueOf(mLevel));
-            mLevelText.setX((mGameEnvironment.getWidth() * .5f) - (textWidth * .5f));
 
             if(isAddStep) {
+                float textWidth = Text.measureText(String.valueOf(mLevel));
+                mLevelText.setText(String.valueOf(mLevel));
+                mLevelText.setX((mGameEnvironment.getWidth() * .5f) - (textWidth * .5f));
+                mLevelText.setVisibility(true);
                 long currentTime = System.currentTimeMillis();
                 if(currentTime > mDelayTime) {
                     mDelayTime = 0;
@@ -231,6 +232,7 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
                 }
 
             } else {
+                mLevelText.setVisibility(false);
                 mBlueSquare.setVisibility(true);
                 mRedSquare.setVisibility(true);
             }
