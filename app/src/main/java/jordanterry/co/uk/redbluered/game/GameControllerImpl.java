@@ -1,9 +1,9 @@
 package jordanterry.co.uk.redbluered.game;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import jordanterry.co.uk.redbluered.R;
 import jordanterry.co.uk.redbluered.game.models.Circle;
@@ -129,6 +129,8 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
     private boolean isDisplayLevel = false;
     private static final long DISPLAY_LEVEL_TIME = 1250;
 
+    private boolean isDisplayGame = false;
+
     public GameControllerImpl(Context context, GameJourneyPresenter gameJourneyPresenter) {
         mContext = context;
         mGameSurface = new GamePanel(context, this);
@@ -211,18 +213,14 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
 
             if(isAddStep) {
 
-
-
                 if(isDisplayLevel) {
 
                     if(!isTimeSet) {
-                        Log.e(TAG, "Time set");
                         mLevelDisplay = currentTime + DISPLAY_LEVEL_TIME;
                         isTimeSet = true;
                     }
 
                     if(currentTime < mLevelDisplay) {
-                        Log.e(TAG, "Display level");
                         mLevelText.setText(String.valueOf(mLevel));
                         float textWidth = mLevelText.measureText();
                         mLevelText.setX((mGameEnvironment.getWidth() * .5f) - (textWidth * .5f));
@@ -230,10 +228,10 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
                         mRedSquare.setVisibility(false);
                         mBlueSquare.setVisibility(false);
                     } else {
-                        Log.e(TAG, "Stopped displaying level");
                         isDisplayLevel = false;
                         isDisplaySteps = true;
                         isTimeSet = false;
+                        setDelayTimes();
                     }
 
                 }
@@ -241,50 +239,52 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
 
 
                 if(isDisplaySteps) {
-                    Log.e(TAG, "Display steps");
-                    if(currentTime > mDelayTime) {
-                        Log.e(TAG, "In here");
 
-                        mDelayTime = 0;
-                        for (int i = 0; i < mGameColours.getSteps().size(); i++) {
+                    for (int i = 0; i < mGameColours.getSteps().size(); i++) {
 
-                            if(i == mDisplayStep) {
-                                if(isDisplayingStep) {
+                        if(i == mDisplayStep) {
 
-                                    if(currentTime < mDelayTime) {
-                                        mRedSquare.setVisibility(false);
-                                        mBlueSquare.setVisibility(false);
-                                        mLevelText.setVisibility(false);
-                                    } else if(currentTime < mChangeStepTime) {
-                                        if(mGameColours.getColour(i) == GameColours.RED) {
-                                            mRedSquare.setVisibility(true);
-                                            mBlueSquare.setVisibility(false);
+                            if(currentTime < mDelayTime) {
 
-                                        } else if(mGameColours.getColour(i) == GameColours.BLUE) {
-                                            mRedSquare.setVisibility(false);
-                                            mBlueSquare.setVisibility(true);
-                                        }
-                                        mLevelText.setVisibility(false);
-                                    } else if(i == mGameColours.getSteps().size() - 1 && currentTime > mChangeStepTime) {
-                                        isAddStep = false;
-                                        isDisplaySteps = false;
-                                    }
+                                mRedSquare.setVisibility(false);
+                                mBlueSquare.setVisibility(false);
+                                mLevelText.setVisibility(false);
 
-                                } else {
-                                    isDisplayingStep = true;
-                                    mDelayTime = currentTime + STEP_DELAY_TIME;
-                                    mChangeStepTime = currentTime + STEP_DISPLAY_TIME
-                                            + STEP_DELAY_TIME;
+                            } else if(currentTime < mChangeStepTime) {
+
+                                if(mGameColours.getColour(i) == GameColours.RED) {
+                                    mRedSquare.setVisibility(true);
+                                    mBlueSquare.setVisibility(false);
+                                } else if(mGameColours.getColour(i) == GameColours.BLUE) {
+                                    mRedSquare.setVisibility(false);
+                                    mBlueSquare.setVisibility(true);
                                 }
+                                mLevelText.setVisibility(false);
+
                             }
+
+
+
+                            if(i == (mGameColours.getSteps().size() - 1)
+                                    && currentTime > mChangeStepTime) {
+                                isAddStep = false;
+                                isDisplaySteps = false;
+                                isDisplayGame = true;
+                            } else if(i < (mGameColours.getSteps().size() - 1)
+                                    && currentTime > mChangeStepTime) {
+                                mDisplayStep++;
+                                setDelayTimes();
+                            }
+
                         }
+
                     }
+
                 }
 
+            }
 
-
-
-            } else {
+            if(isDisplayGame) {
                 mLevelText.setVisibility(false);
                 mBlueSquare.setVisibility(true);
                 mRedSquare.setVisibility(true);
@@ -296,7 +296,7 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
 
     @Override
     public void drawState() {
-        ArrayList<GameObject> gameObjects = new ArrayList<>();
+        List<GameObject> gameObjects = new ArrayList<>();
 
         gameObjects.add(mBackgroundRectangle);
         gameObjects.add(mRedSquare);
@@ -304,6 +304,11 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
         gameObjects.add(mLevelText);
 
         mGameSurface.drawState(gameObjects);
+    }
+
+    private void setDelayTimes() {
+        mDelayTime = System.currentTimeMillis() + STEP_DELAY_TIME;
+        mChangeStepTime = mDelayTime + STEP_DISPLAY_TIME;
     }
 
 
@@ -337,11 +342,11 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
      * <p>Display the next steps process.</p>
      */
     private void displaySteps() {
+        mDisplayStep = 0;
         isAddStep = true;
+        isDisplayGame = false;
         isDisplayLevel = true;
         isDisplaySteps = false;
-        mChangeStepTime = System.currentTimeMillis() + STEP_DISPLAY_TIME;
-        mDisplayStep = 0;
     }
 
     /**
