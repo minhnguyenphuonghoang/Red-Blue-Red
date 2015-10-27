@@ -20,7 +20,7 @@ import jordanterry.co.uk.redbluered.ui.presenters.GameJourneyPresenter;
 /**
  * <p>An implementation of the {@link GameController} interface.</p>
  */
-public class GameControllerImpl implements GamePanel.OnGameInteraction, GameController, OnTouchListener {
+public class GameControllerImpl implements GamePanel.OnGameInteraction, GameController, OnTouchListener, Circle.OnTouchListener {
 
     public static final String TAG = GameControllerImpl.class.getSimpleName();
 
@@ -131,6 +131,12 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
 
     private boolean isDisplayGame = false;
 
+
+    private boolean isDisplaySteps = false;
+    private boolean isTimeSet = false;
+
+    private long mInitialDelay = 0;
+
     public GameControllerImpl(Context context, GameJourneyPresenter gameJourneyPresenter) {
         mContext = context;
         mGameSurface = new GamePanel(context, this);
@@ -176,20 +182,10 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
         mBackgroundRectangle = new Rectangle(0, 0, gameEnvironment.getWidth(),
                 gameEnvironment.getHeight(), GameColours.GREY);
         mRedSquare = new Circle((width * .25f), (height * .5f), squareWidth,
-                GameColours.RED, GameColours.DARK_RED, new Circle.OnTouchListener() {
-            @Override
-            public void onTouch(int colour) {
-                checkUserClick(colour);
-            }
-        });
+                GameColours.RED, GameColours.DARK_RED, this);
 
         mBlueSquare = new Circle((width * .75f), (height * .5f), squareWidth,
-                GameColours.BLUE, GameColours.DARK_BLUE, new Circle.OnTouchListener() {
-            @Override
-            public void onTouch(int colour) {
-                checkUserClick(colour);
-            }
-        });
+                GameColours.BLUE, GameColours.DARK_BLUE, this);
         float textSize = mContext.getResources().getDimension(R.dimen.level_text_size);
         mLevelText = new Text((width * .5f), height * .5f, String.valueOf(mLevel), GameColours.RED, textSize);
 
@@ -199,9 +195,6 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
         start();
     }
 
-    private boolean isDisplaySteps = false;
-    private boolean isDisplayingStep = false;
-    private boolean isTimeSet = false;
 
     @Override
     public void updateState() {
@@ -210,8 +203,12 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
             long currentTime = System.currentTimeMillis();
             mBlueSquare.update();
             mRedSquare.update();
+            mLevelText.setVisibility(false);
+            mRedSquare.setVisibility(false);
+            mBlueSquare.setVisibility(false);
 
-            if(isAddStep) {
+
+            if(isAddStep && currentTime > mInitialDelay) {
 
                 if(isDisplayLevel) {
 
@@ -284,7 +281,7 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
 
             }
 
-            if(isDisplayGame) {
+            if(isDisplayGame || (currentTime < mInitialDelay) && mGameColours.getSteps().size() > 1) {
                 mLevelText.setVisibility(false);
                 mBlueSquare.setVisibility(true);
                 mRedSquare.setVisibility(true);
@@ -342,6 +339,7 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
      * <p>Display the next steps process.</p>
      */
     private void displaySteps() {
+        mInitialDelay = System.currentTimeMillis() + DISPLAY_LEVEL_TIME;
         mDisplayStep = 0;
         isAddStep = true;
         isDisplayGame = false;
@@ -359,6 +357,9 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
 
     @Override
     public void onTouch(int colour) {
-        checkUserClick(colour);
+
+        if(!isAddStep) {
+            checkUserClick(colour);
+        }
     }
 }
