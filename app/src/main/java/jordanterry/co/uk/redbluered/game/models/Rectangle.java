@@ -66,6 +66,16 @@ public class Rectangle extends BaseShape {
     }
 
     @Override
+    public void setDisplaying() {
+
+    }
+
+    @Override
+    public void setHiding() {
+
+    }
+
+    @Override
     public void update() {
 
     }

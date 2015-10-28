@@ -62,6 +62,9 @@ public interface GameObject {
      */
     void isTouch(float x, float y);
 
+    void setDisplaying();
+
+    void setHiding();
     /**
      * <p>Called to update the state of the GameObject.</p>
      */

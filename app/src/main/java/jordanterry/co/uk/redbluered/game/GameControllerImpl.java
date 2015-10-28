@@ -100,7 +100,7 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
     /**
      * <p>The duration of time the swapping between a step will be delayed for.</p>
      */
-    private static final long STEP_DELAY_TIME = 200;
+    private static final long STEP_DELAY_TIME = 600;
 
 
     /**
@@ -250,11 +250,11 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
                             } else if(currentTime < mChangeStepTime) {
 
                                 if(mGameColours.getColour(i) == GameColours.RED) {
-                                    mRedSquare.setVisibility(true);
-                                    mBlueSquare.setVisibility(false);
-                                } else if(mGameColours.getColour(i) == GameColours.BLUE) {
                                     mRedSquare.setVisibility(false);
-                                    mBlueSquare.setVisibility(true);
+                                    mBlueSquare.setHiding();
+                                } else if(mGameColours.getColour(i) == GameColours.BLUE) {
+                                    mRedSquare.setHiding();
+                                    mBlueSquare.setVisibility(false);
                                 }
                                 mLevelText.setVisibility(false);
 
