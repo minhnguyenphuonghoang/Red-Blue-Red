@@ -162,7 +162,7 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
 
     @Override
     public void onGameOver() {
-        mGameJourneyPresenter.gameOver();
+        mGameJourneyPresenter.gameOver(mLevel);
     }
 
     @Override

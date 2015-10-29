@@ -62,7 +62,7 @@ public class GameActivity extends AppCompatActivity implements GameView {
 
 
     @Override
-    public void onGameOver() {
+    public void onGameOver(int level) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Fragment prev = getSupportFragmentManager().findFragmentByTag(GameOverFragment.TAG);
         if (prev != null) {
@@ -70,7 +70,7 @@ public class GameActivity extends AppCompatActivity implements GameView {
         }
         ft.addToBackStack(null);
 
-        GameOverFragment newFragment = GameOverFragment.newInstance();
+        GameOverFragment newFragment = GameOverFragment.newInstance(level);
         newFragment.show(ft, GameOverFragment.TAG);
     }
 }

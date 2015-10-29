@@ -5,6 +5,6 @@ package jordanterry.co.uk.redbluered.ui.presenters;
  */
 public interface GameJourneyPresenter {
 
-    void gameOver();
+    void gameOver(int level);
 
 }

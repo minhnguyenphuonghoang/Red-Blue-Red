@@ -14,7 +14,7 @@ public class GameJourneyPresenterImpl implements GameJourneyPresenter {
     }
 
     @Override
-    public void gameOver() {
-        mGameView.onGameOver();
+    public void gameOver(int level) {
+        mGameView.onGameOver(level);
     }
 }

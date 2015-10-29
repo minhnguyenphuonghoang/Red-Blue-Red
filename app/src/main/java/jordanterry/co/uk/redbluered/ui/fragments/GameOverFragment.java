@@ -27,9 +27,13 @@ public class GameOverFragment extends DialogFragment implements GameOverView {
 
     private GameOverPresenter mGameOverPresenter;
 
-    public static GameOverFragment newInstance() {
+    private static String KEY_LEVEL = "KEY_LEVEL";
+    private int mLevel;
+
+    public static GameOverFragment newInstance(int level) {
         GameOverFragment fragment = new GameOverFragment();
         Bundle bundle = new Bundle();
+        bundle.putInt(KEY_LEVEL, level);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -48,6 +52,11 @@ public class GameOverFragment extends DialogFragment implements GameOverView {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if(savedInstanceState == null) {
+            mLevel = getArguments().getInt(KEY_LEVEL);
+        } else {
+            mLevel = savedInstanceState.getInt(KEY_LEVEL);
+        }
         View view = inflater.inflate(R.layout.fragment_game_over, container);
         ButterKnife.bind(this, view);
         return view;
@@ -69,5 +78,11 @@ public class GameOverFragment extends DialogFragment implements GameOverView {
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
         mGameOverPresenter.mainMenu();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putInt(KEY_LEVEL, mLevel);
+        super.onSaveInstanceState(outState);
     }
 }
