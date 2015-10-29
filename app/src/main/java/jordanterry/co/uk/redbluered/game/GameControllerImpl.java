@@ -250,11 +250,11 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
                             } else if(currentTime < mChangeStepTime) {
 
                                 if(mGameColours.getColour(i) == GameColours.RED) {
-                                    mRedSquare.setVisibility(false);
+                                    mRedSquare.setDisplaying();
                                     mBlueSquare.setHiding();
                                 } else if(mGameColours.getColour(i) == GameColours.BLUE) {
                                     mRedSquare.setHiding();
-                                    mBlueSquare.setVisibility(false);
+                                    mBlueSquare.setDisplaying();
                                 }
                                 mLevelText.setVisibility(false);
 

@@ -117,7 +117,7 @@ public class Circle extends BaseShape {
 
                 canvas.restore();
             }
-            if(isHiding) {
+           /* if(isHiding) {
 
                 canvas.save();
                 canvas.clipPath(mPath);
@@ -125,7 +125,7 @@ public class Circle extends BaseShape {
                 canvas.drawCircle(getX(), getY(), mWhiteEdge, mWhitePaint);
 
                 canvas.restore();
-            }
+            }*/
         }
     }
 
@@ -167,7 +167,7 @@ public class Circle extends BaseShape {
 
 
 
-        if(isHiding) {
+        /*if(isHiding) {
 
             if (mWhiteTransitionStart == 0) {
                 mWhiteTransitionStart = System.currentTimeMillis();
@@ -183,7 +183,7 @@ public class Circle extends BaseShape {
             mWhiteTransitionStart = 0;
             mWhiteEdge = 0;
         }
-
+*/
         if(isDisplaying) {
 
             if (mWhiteTransitionStart == 0) {
