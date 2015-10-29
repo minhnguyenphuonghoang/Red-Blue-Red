@@ -6,6 +6,7 @@
 
     <TextView
         android:text="@string/game_over_fragment_game_over"
+        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

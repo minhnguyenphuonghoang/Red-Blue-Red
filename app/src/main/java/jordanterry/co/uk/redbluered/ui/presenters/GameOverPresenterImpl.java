@@ -1,5 +1,8 @@
 package jordanterry.co.uk.redbluered.ui.presenters;
 
+import android.app.Activity;
+
+import jordanterry.co.uk.redbluered.ui.activities.GameActivity;
 import jordanterry.co.uk.redbluered.ui.views.GameOverView;
 
 /**
@@ -9,8 +12,10 @@ import jordanterry.co.uk.redbluered.ui.views.GameOverView;
 public class GameOverPresenterImpl implements GameOverPresenter {
 
     private GameOverView mGameOverView;
+    private Activity mActivity;
 
-    public GameOverPresenterImpl(GameOverView gameOverView) {
+    public GameOverPresenterImpl(Activity activity, GameOverView gameOverView) {
+        mActivity = activity;
         mGameOverView = gameOverView;
     }
 
@@ -31,16 +36,19 @@ public class GameOverPresenterImpl implements GameOverPresenter {
 
     @Override
     public void restartGame() {
-
+        mActivity.setResult(GameActivity.RESULT_GAME_RESTART);
+        mActivity.finish();
     }
 
     @Override
     public void openLeaderboards() {
-
+        mActivity.setResult(GameActivity.RESULT_LEADERBOARDS);
+        mActivity.finish();
     }
 
     @Override
     public void mainMenu() {
-
+        mActivity.setResult(GameActivity.RESULT_MAIN_MENU);
+        mActivity.finish();
     }
 }

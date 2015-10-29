@@ -1,7 +1,7 @@
 package jordanterry.co.uk.redbluered.ui.views;
 
 /**
- * <p>The interface defininf the Game Over View.</p>
+ * <p>The interface defining the Game Over View.</p>
  */
 public interface GameOverView {
 }

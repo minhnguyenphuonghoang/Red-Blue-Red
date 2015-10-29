@@ -21,6 +21,15 @@ public class GameActivity extends AppCompatActivity implements GameView {
 
     public static final String TAG = GameActivity.class.getSimpleName();
 
+    public static int REQUEST_CODE = 1;
+
+    public static int RESULT_MAIN_MENU = 2;
+
+    public static int RESULT_GAME_RESTART = 3;
+
+    public static int RESULT_LEADERBOARDS = 4;
+
+
     private GameControllerImpl mGameController;
 
     private GamePresenter mGamePresenter;
@@ -50,6 +59,7 @@ public class GameActivity extends AppCompatActivity implements GameView {
             }
         }
     }
+
 
     @Override
     public void onGameOver() {
