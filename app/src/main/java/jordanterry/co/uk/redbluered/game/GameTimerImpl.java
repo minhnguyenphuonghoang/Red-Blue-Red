@@ -1,5 +1,7 @@
 package jordanterry.co.uk.redbluered.game;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 /**
@@ -41,21 +43,21 @@ public class GameTimerImpl extends Thread implements GameTimer {
      */
     private GameController mGameController;
 
+    private Handler mHandler;
 
-    /**
-     * <p>A constructor containing the GameController.</p>
-     * @param gameController
-     */
-    public GameTimerImpl(GameController gameController) {
+    public GameTimerImpl(String name, GameController gameController) {
+        super(name);
         mGameController = gameController;
+        mHandler = new Handler(Looper.getMainLooper());
     }
 
     @Override
     public void run() {
-        long beginTime, timeDiff;
-        int sleepTime, framesSkipped;
+
         while(isRunning){
             if(!isGameEnded) {
+                long beginTime, timeDiff;
+                int sleepTime, framesSkipped;
                 beginTime = System.currentTimeMillis();
                 framesSkipped = 0;
 
@@ -79,6 +81,7 @@ public class GameTimerImpl extends Thread implements GameTimer {
                     sleepTime += FRAME_PERIOD;
                     framesSkipped++;
                 }
+
 
             } else {
                 isRunning = false;

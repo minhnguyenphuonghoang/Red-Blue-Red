@@ -1,11 +1,12 @@
 package jordanterry.co.uk.redbluered.game.models;
 
+import android.animation.ValueAnimator;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-
-import jordanterry.co.uk.redbluered.helpers.EasingHelpers;
+import android.os.Handler;
+import android.os.Looper;
 
 /**
  * <p>The Square is the main shape that will be used in the Game.</p>
@@ -27,7 +28,7 @@ public class Circle extends BaseShape {
     private OnTouchListener mOnTouchListener;
 
     private boolean isTouched = false;
-
+    private boolean isDisplayTouched = false;
 
     private float mTouchDarkEdge;
 
@@ -37,21 +38,11 @@ public class Circle extends BaseShape {
 
     private static long ANIMATION_DURATION = 500;
 
-    private float mWhiteEdge;
-    private float mBlueEdge;
-    private long mWhiteTransitionStart = 0;
-    private long mWhiteTransitionTime = 0;
-    private long mBlueTransitionTime = 0;
-    private long mBlueTransitionStart = 0;
 
 
-    private long mDarkTransitionTime = 0;
-    private long mDarkTransitionStart = 0;
-    private long mNormalTransitionTime = 0;
-    private long mNormalTransitionStart = 0;
-    private boolean isTransitionFinished = false;
-
+    private float mDisplayStep;
     private boolean isDisplaying = false;
+    private boolean isDisplayDisplaying = false;
     private boolean isHiding = false;
 
     private Path mPath;
@@ -96,28 +87,28 @@ public class Circle extends BaseShape {
     @Override
     public void draw(Canvas canvas) {
         if(isVisible()) {
-            if(!isDisplaying) {
+            if(!isDisplaying && !isDisplayDisplaying) {
                 canvas.drawCircle(getX(), getY(), mRadius, mBackgroundColour);
             }
-            if(isTouched) {
+            if(isDisplayTouched) {
                 canvas.save();
                 canvas.clipPath(mPath);
-
                 canvas.drawCircle(mTouchX, mTouchY, mTouchDarkEdge, mDarkBackgroundColour);
                 canvas.drawCircle(mTouchX, mTouchY, mTouchNormalEdge, mBackgroundColour);
 
                 canvas.restore();
 
             }
-            if(isDisplaying) {
+             if(isDisplayDisplaying) {
                 canvas.save();
                 canvas.clipPath(mPath);
 
-                canvas.drawCircle(getX(), getY(), mBlueEdge, mBackgroundColour);
+                canvas.drawCircle(getX(), getY(), mDisplayStep, mBackgroundColour);
 
                 canvas.restore();
             }
-           /* if(isHiding) {
+            /*
+           if(isHiding) {
 
                 canvas.save();
                 canvas.clipPath(mPath);
@@ -138,6 +129,7 @@ public class Circle extends BaseShape {
                 mTouchY = y;
                 mClickSize = mRadius * 3;
                 isTouched = true;
+                isDisplayTouched = true;
                 mOnTouchListener.onTouch(mBackgroundColour.getColor());
             }
         }
@@ -147,95 +139,62 @@ public class Circle extends BaseShape {
     @Override
     public void update() {
 
-
         if(isDisplaying) {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
 
-            if (mBlueTransitionStart == 0) {
-                mBlueTransitionStart = System.currentTimeMillis();
-            }
-            if (mBlueTransitionStart + ANIMATION_DURATION > System.currentTimeMillis()) {
-                mBlueEdge = EasingHelpers.linear(mBlueTransitionTime, 0, mRadius * 2, ANIMATION_DURATION);
-                mBlueTransitionTime = System.currentTimeMillis() - mBlueTransitionStart;
-            } else {
-                isDisplaying = false;
-            }
-        } else {
-            mBlueTransitionStart = 0;
-            mBlueTransitionTime = 0;
-            mBlueEdge = 0;
-        }
+                    ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, mRadius * 2);
+                    valueAnimator.setDuration(250);
+                    valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator animation) {
+                            mDisplayStep = (Float) animation.getAnimatedValue();
+                            if(mDisplayStep == mRadius * 2) {
+                                isDisplayDisplaying = true;
+                            }
+                        }
+                    });
+                    valueAnimator.start();
+                    isDisplaying = false;
+                }
+            });
 
 
-
-        /*if(isHiding) {
-
-            if (mWhiteTransitionStart == 0) {
-                mWhiteTransitionStart = System.currentTimeMillis();
-            }
-            if (mWhiteTransitionStart + ANIMATION_DURATION > System.currentTimeMillis()) {
-                mWhiteEdge = EasingHelpers.linear(mWhiteTransitionTime, mRadius * 2, 0, ANIMATION_DURATION);
-                mWhiteTransitionTime = System.currentTimeMillis() - mWhiteTransitionStart;
-            } else {
-                isHiding = false;
-            }
-        } else {
-            mWhiteTransitionStart = 0;
-            mWhiteTransitionStart = 0;
-            mWhiteEdge = 0;
-        }
-*/
-        if(isDisplaying) {
-
-            if (mWhiteTransitionStart == 0) {
-                mWhiteTransitionStart = System.currentTimeMillis();
-            }
-            if (mWhiteTransitionStart + ANIMATION_DURATION > System.currentTimeMillis()) {
-                mWhiteEdge = EasingHelpers.linear(mWhiteTransitionTime, 0, mRadius * 2, ANIMATION_DURATION);
-                mWhiteTransitionTime = System.currentTimeMillis() - mWhiteTransitionStart;
-            } else {
-                isDisplaying = false;
-            }
-        } else {
-            mWhiteTransitionStart = 0;
-            mWhiteTransitionTime = 0;
-            mWhiteEdge = 0;
         }
 
         if(isTouched) {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
 
-            if (mDarkTransitionStart == 0) {
-                mDarkTransitionStart = System.currentTimeMillis();
-            }
+                    ValueAnimator darkAnimator = ValueAnimator.ofFloat(0, mRadius * 2);
+                    darkAnimator.setDuration(250);
+                    darkAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator darkAnimation) {
+                            mTouchDarkEdge = (Float) darkAnimation.getAnimatedValue();
+                        }
+                    });
 
-            if (mDarkTransitionStart != 0 && mDarkTransitionStart + ANIMATION_DURATION > System.currentTimeMillis()) {
-                mTouchDarkEdge = EasingHelpers.linear(mDarkTransitionTime, 0, mClickSize, ANIMATION_DURATION);
-                mDarkTransitionTime = System.currentTimeMillis() - mDarkTransitionStart;
-            }
+                    ValueAnimator lightAnimator = ValueAnimator.ofFloat(0, mRadius * 2);
+                    lightAnimator.setDuration(250);
+                    lightAnimator.setStartDelay(100);
+                    lightAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator lightAnimation) {
+                            mTouchNormalEdge = (Float) lightAnimation.getAnimatedValue();
+                            if(mTouchNormalEdge == mRadius * 2) {
+                                isDisplayTouched = false;
+                            }
+                        }
+                    });
+                    darkAnimator.start();
+                    lightAnimator.start();
+                    isTouched = false;
 
-            if(mTouchDarkEdge > mRadius * .2f) {
-
-                if(mNormalTransitionStart == 0) {
-                    mNormalTransitionStart = System.currentTimeMillis();
                 }
-
-                if (mNormalTransitionStart != 0 && mNormalTransitionStart + ANIMATION_DURATION > System.currentTimeMillis()) {
-                    mTouchNormalEdge = EasingHelpers.linear(mNormalTransitionTime, 0, mClickSize, ANIMATION_DURATION);
-                    mNormalTransitionTime = System.currentTimeMillis() - mNormalTransitionStart;
-                } else {
-                    isTransitionFinished = true;
-                }
-            }
-
-            if(isTransitionFinished) {
-                isTouched = false;
-                mTouchDarkEdge = 0;
-                mTouchNormalEdge = 0;
-                mDarkTransitionTime = 0;
-                mDarkTransitionStart = 0;
-                mNormalTransitionTime = 0;
-                mNormalTransitionStart = 0;
-                isTransitionFinished = false;
-            }
+            });
         }
     }
 
@@ -243,6 +202,7 @@ public class Circle extends BaseShape {
     public void setDisplaying() {
         setVisibility(true);
         isDisplaying = true;
+        isDisplayDisplaying = true;
     }
 
     @Override

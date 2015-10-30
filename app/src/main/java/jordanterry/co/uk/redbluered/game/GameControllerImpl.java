@@ -140,7 +140,7 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
     public GameControllerImpl(Context context, GameJourneyPresenter gameJourneyPresenter) {
         mContext = context;
         mGameSurface = new GamePanel(context, this);
-        mGameTimer = new GameTimerImpl(this);
+        mGameTimer = new GameTimerImpl("Game", this);
         mGameJourneyPresenter = gameJourneyPresenter;
     }
 
@@ -198,25 +198,16 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
 
     @Override
     public void updateState() {
-
+        long currentTime = System.currentTimeMillis();
         if(isReady) {
-            long currentTime = System.currentTimeMillis();
             mBlueSquare.update();
             mRedSquare.update();
-            mLevelText.setVisibility(false);
-            mRedSquare.setVisibility(false);
-            mBlueSquare.setVisibility(false);
-
-
             if(isAddStep && currentTime > mInitialDelay) {
-
                 if(isDisplayLevel) {
-
                     if(!isTimeSet) {
                         mLevelDisplay = currentTime + DISPLAY_LEVEL_TIME;
                         isTimeSet = true;
                     }
-
                     if(currentTime < mLevelDisplay) {
                         mLevelText.setText(String.valueOf(mLevel));
                         float textWidth = mLevelText.measureText();
@@ -230,25 +221,16 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
                         isTimeSet = false;
                         setDelayTimes();
                     }
-
                 }
 
-
-
                 if(isDisplaySteps) {
-
                     for (int i = 0; i < mGameColours.getSteps().size(); i++) {
-
                         if(i == mDisplayStep) {
-
                             if(currentTime < mDelayTime) {
-
                                 mRedSquare.setVisibility(false);
                                 mBlueSquare.setVisibility(false);
                                 mLevelText.setVisibility(false);
-
                             } else if(currentTime < mChangeStepTime) {
-
                                 if(mGameColours.getColour(i) == GameColours.RED) {
                                     mRedSquare.setDisplaying();
                                     mBlueSquare.setHiding();
@@ -257,13 +239,9 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
                                     mBlueSquare.setDisplaying();
                                 }
                                 mLevelText.setVisibility(false);
-
                             }
 
-
-
-                            if(i == (mGameColours.getSteps().size() - 1)
-                                    && currentTime > mChangeStepTime) {
+                            if(i == (mGameColours.getSteps().size() - 1) && currentTime > mChangeStepTime) {
                                 isAddStep = false;
                                 isDisplaySteps = false;
                                 isDisplayGame = true;
@@ -272,13 +250,9 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
                                 mDisplayStep++;
                                 setDelayTimes();
                             }
-
                         }
-
                     }
-
                 }
-
             }
 
             if(isDisplayGame || (currentTime < mInitialDelay) && mGameColours.getSteps().size() > 1) {
@@ -294,15 +268,16 @@ public class GameControllerImpl implements GamePanel.OnGameInteraction, GameCont
     @Override
     public void drawState() {
         List<GameObject> gameObjects = new ArrayList<>();
-
         gameObjects.add(mBackgroundRectangle);
         gameObjects.add(mRedSquare);
         gameObjects.add(mBlueSquare);
         gameObjects.add(mLevelText);
-
         mGameSurface.drawState(gameObjects);
     }
 
+    /**
+     * <p>Set the delay times.</p>
+     */
     private void setDelayTimes() {
         mDelayTime = System.currentTimeMillis() + STEP_DELAY_TIME;
         mChangeStepTime = mDelayTime + STEP_DISPLAY_TIME;
