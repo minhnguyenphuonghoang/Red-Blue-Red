@@ -13,6 +13,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import jordanterry.co.uk.redbluered.R;
+import jordanterry.co.uk.redbluered.game.views.CircleView;
 import jordanterry.co.uk.redbluered.interfaces.OnPlayClicked;
 import jordanterry.co.uk.redbluered.ui.presenters.MenuPresenter;
 import jordanterry.co.uk.redbluered.ui.presenters.MenuPresenterImpl;
@@ -29,7 +30,7 @@ public class MenuFragment extends Fragment implements MenuView {
     /**
      * A {@link Button} the play button.
      */
-    @Bind(R.id.play_button) Button mPlayButton;
+    @Bind(R.id.play_button) CircleView mPlayButton;
 
     /**
      * The {@link OnPlayClicked} listener for interactions within the game.

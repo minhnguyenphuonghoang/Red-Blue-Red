@@ -3,4 +3,15 @@
     <color name="primary">#ffffff</color>
     <color name="primary_dark">#ebebeb</color>
     <color name="primary_text">#000000</color>
+
+    <color name="red">#f44336</color>
+    <color name="red_dark">#b71c1c</color>
+    <color name="red_light">#ffebee</color>
+
+    <color name="blue">#2196F8</color>
+    <color name="blue_dark">#0d47a1</color>
+    <color name="blue_light">#e3f2fd</color>
+
+
+    <color name="light_grey">#ebebeb</color>
 </resources>

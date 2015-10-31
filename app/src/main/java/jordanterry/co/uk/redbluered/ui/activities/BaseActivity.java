@@ -1,13 +1,21 @@
 package jordanterry.co.uk.redbluered.ui.activities;
 
+import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.transition.Explode;
+import android.view.Window;
 
 /**
  * <p>The BaseActivity will provide methods that all other Activites will need to use.</p>
  */
 public class BaseActivity extends AppCompatActivity {
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     /**
      * <p>Add a provided Fragment to the containerId using the tag.

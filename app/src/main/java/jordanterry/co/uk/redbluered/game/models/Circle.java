@@ -90,33 +90,19 @@ public class Circle extends BaseShape {
             if(!isDisplaying && !isDisplayDisplaying) {
                 canvas.drawCircle(getX(), getY(), mRadius, mBackgroundColour);
             }
+            canvas.save();
             if(isDisplayTouched) {
-                canvas.save();
                 canvas.clipPath(mPath);
                 canvas.drawCircle(mTouchX, mTouchY, mTouchDarkEdge, mDarkBackgroundColour);
                 canvas.drawCircle(mTouchX, mTouchY, mTouchNormalEdge, mBackgroundColour);
-
-                canvas.restore();
-
             }
-             if(isDisplayDisplaying) {
-                canvas.save();
-                canvas.clipPath(mPath);
 
+            if(!isDisplaying && isDisplayDisplaying) {
+                canvas.clipPath(mPath);
                 canvas.drawCircle(getX(), getY(), mDisplayStep, mBackgroundColour);
-
-                canvas.restore();
             }
-            /*
-           if(isHiding) {
+            canvas.restore();
 
-                canvas.save();
-                canvas.clipPath(mPath);
-
-                canvas.drawCircle(getX(), getY(), mWhiteEdge, mWhitePaint);
-
-                canvas.restore();
-            }*/
         }
     }
 
@@ -151,7 +137,7 @@ public class Circle extends BaseShape {
                         public void onAnimationUpdate(ValueAnimator animation) {
                             mDisplayStep = (Float) animation.getAnimatedValue();
                             if(mDisplayStep == mRadius * 2) {
-                                isDisplayDisplaying = true;
+                                isDisplayDisplaying = false;
                             }
                         }
                     });

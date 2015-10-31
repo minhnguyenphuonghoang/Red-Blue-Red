@@ -5,6 +5,6 @@ package jordanterry.co.uk.redbluered.ui.presenters;
  */
 public interface MenuPresenter extends Presenter {
 
-
+    
 
 }

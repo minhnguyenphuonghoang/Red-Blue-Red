@@ -10,4 +10,7 @@
     <string name="game_over_fragment_button_leaderboard">Leaderboard</string>
     <string name="game_over_fragment_button_quit">Quit</string>
 
+
+    <string name="level_start">0</string>
+
 </resources>
