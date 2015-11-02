@@ -4,7 +4,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.transition.Explode;
+import android.transition.Fade;
+import android.transition.Transition;
 import android.view.Window;
 
 /**
@@ -14,6 +15,16 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Transition fade = new Fade();
+            fade.excludeTarget(android.R.id.statusBarBackground, true);
+            fade.excludeTarget(android.R.id.navigationBarBackground, true);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                getWindow().setExitTransition(fade);
+                getWindow().setEnterTransition(fade);
+            }
+        }
         super.onCreate(savedInstanceState);
     }
 

@@ -3,7 +3,6 @@ package jordanterry.co.uk.redbluered.ui.activities;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import butterknife.Bind;
@@ -19,7 +18,7 @@ import jordanterry.co.uk.redbluered.ui.views.GameView;
 /**
  * Created by jordanterry on 14/10/15.
  */
-public class GameActivity extends AppCompatActivity implements GameView {
+public class GameActivity extends BaseActivity implements GameView {
 
     public static final String TAG = GameActivity.class.getSimpleName();
 
@@ -42,7 +41,7 @@ public class GameActivity extends AppCompatActivity implements GameView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.game_layout);
+        setContentView(R.layout.activity_game);
         ButterKnife.bind(this);
 
         mGamePlayPresenter = new GamePlayPresenterImpl(this);

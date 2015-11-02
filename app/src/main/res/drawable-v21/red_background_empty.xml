@@ -8,5 +8,4 @@
             <stroke android:color="@color/red" android:width="5dp" />
         </shape>
     </item>
-
 </selector>

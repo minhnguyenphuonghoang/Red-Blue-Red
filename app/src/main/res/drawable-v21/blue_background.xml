@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ripple android:color="@color/blue_dark" xmlns:android="http://schemas.android.com/apk/res/android">
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item>
         <shape android:shape="oval">
             <solid android:color="@color/blue" />
+            <stroke android:color="@color/blue" android:width="5dp" />
             <size android:height="@dimen/circle_diameter" android:width="@dimen/circle_diameter" />
         </shape>
     </item>
-</ripple>
+</selector>
