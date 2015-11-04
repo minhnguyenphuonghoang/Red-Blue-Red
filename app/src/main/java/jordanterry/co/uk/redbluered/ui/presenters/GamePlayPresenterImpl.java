@@ -1,5 +1,6 @@
 package jordanterry.co.uk.redbluered.ui.presenters;
 
+import jordanterry.co.uk.redbluered.game.GameStatusController;
 import jordanterry.co.uk.redbluered.ui.views.GameView;
 
 /**
@@ -9,12 +10,43 @@ public class GamePlayPresenterImpl implements GamePlayPresenter {
 
     private GameView mGameView;
 
+
+    private GameStatusController mGameStatusController;
+
     public GamePlayPresenterImpl(GameView gameView) {
+        mGameStatusController = new GameStatusController();
         mGameView = gameView;
+        addNewLevel();
     }
 
     @Override
     public void clickButton(int colour) {
 
+        mGameStatusController.addUserStep(colour);
+        if(mGameStatusController.isUserCorrect()) {
+
+            if(mGameStatusController.getGameColours().size() == mGameStatusController.getUserColours().size()) {
+                addNewLevel();
+            } else {
+                keepPlaying();
+            }
+
+        } else {
+            mGameView.onGameOver(mGameStatusController.getLevel());
+        }
+
     }
+
+    @Override
+    public void addNewLevel() {
+        mGameStatusController.resetUserClicks();
+        mGameStatusController.addNewStep();
+        mGameView.displaySteps(mGameStatusController.getGameColours());
+    }
+
+    @Override
+    public void keepPlaying() {
+
+    }
+
 }

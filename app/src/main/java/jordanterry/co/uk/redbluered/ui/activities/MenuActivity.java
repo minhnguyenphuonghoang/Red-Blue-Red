@@ -2,11 +2,7 @@ package jordanterry.co.uk.redbluered.ui.activities;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Pair;
 import android.view.View;
 import android.view.Window;
@@ -18,9 +14,10 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import jordanterry.co.uk.redbluered.R;
+import jordanterry.co.uk.redbluered.game.listeners.CircleTouchListener;
 import jordanterry.co.uk.redbluered.game.views.CircleView;
+import jordanterry.co.uk.redbluered.helpers.ResourceHelpers;
 
 /**
  * <p>The MenuActivity is the first Activity the user will visit.</p>
@@ -37,8 +34,24 @@ public class MenuActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_menu);
+        setContentView(R.layout.activity_start);
         ButterKnife.bind(this);
+
+        mPlayButton.setOnTouchListener(new CircleTouchListener(
+                ResourceHelpers.createTransitionDrawable(MenuActivity.this,
+                        R.drawable.oval_blue_empty_play, R.drawable.oval_blue_filled_play),
+                new CircleTouchListener.OnCircleTouch() {
+                    @Override
+                    public void onTouchDown() {
+
+                    }
+
+                    @Override
+                    public void onTouchUp() {
+                        startGame();
+                    }
+                }
+        ));
     }
 
 
@@ -75,29 +88,4 @@ public class MenuActivity extends BaseActivity {
         }
     }
 
-    @OnClick(R.id.play_button) public void playGame() {
-
-        Drawable backgrounds[] = new Drawable[2];
-
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-            backgrounds[0] = getDrawable(R.drawable.blue_border);
-            backgrounds[1] = getDrawable(R.drawable.blue);
-        } else {
-            backgrounds[0] = getResources().getDrawable(R.drawable.blue_border);
-            backgrounds[1] = getResources().getDrawable(R.drawable.blue);
-        }
-        final TransitionDrawable crossfader = new TransitionDrawable(backgrounds);
-
-
-        mPlayButton.setBackground(crossfader);
-        crossfader.startTransition(600);
-        new Handler().postAtTime(new Runnable() {
-            @Override
-            public void run() {
-                crossfader.reverseTransition(350);
-                startGame();
-            }
-        }, 600);
-
-    }
 }

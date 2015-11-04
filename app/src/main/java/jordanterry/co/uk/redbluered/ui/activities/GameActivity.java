@@ -1,16 +1,25 @@
 package jordanterry.co.uk.redbluered.ui.activities;
 
+import android.app.ActivityOptions;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import android.os.Handler;
+import android.util.Pair;
 import android.view.View;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import jordanterry.co.uk.redbluered.R;
 import jordanterry.co.uk.redbluered.game.GameColours;
+import jordanterry.co.uk.redbluered.game.listeners.CircleTouchListener;
 import jordanterry.co.uk.redbluered.game.views.CircleView;
-import jordanterry.co.uk.redbluered.ui.fragments.GameOverFragment;
+import jordanterry.co.uk.redbluered.helpers.ResourceHelpers;
 import jordanterry.co.uk.redbluered.ui.presenters.GamePlayPresenter;
 import jordanterry.co.uk.redbluered.ui.presenters.GamePlayPresenterImpl;
 import jordanterry.co.uk.redbluered.ui.views.GameView;
@@ -37,6 +46,7 @@ public class GameActivity extends BaseActivity implements GameView {
 
     private GamePlayPresenter mGamePlayPresenter;
 
+    private Handler mHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,24 +54,49 @@ public class GameActivity extends BaseActivity implements GameView {
         setContentView(R.layout.activity_game);
         ButterKnife.bind(this);
 
-        mGamePlayPresenter = new GamePlayPresenterImpl(this);
 
-        mLeftCircle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mGamePlayPresenter.clickButton(GameColours.BLUE);
-            }
-        });
+        mHandler = new Handler();
 
-        mRightCircle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mGamePlayPresenter.clickButton(GameColours.RED);
-            }
-        });
+        mRightCircle.setOnTouchListener(new CircleTouchListener(
+                ResourceHelpers.createTransitionDrawable(this,
+                        R.drawable.oval_red_empty, R.drawable.oval_red_filled),
+                new CircleTouchListener.OnCircleTouch() {
+                    @Override
+                    public void onTouchDown() {
 
+                    }
+
+                    @Override
+                    public void onTouchUp() {
+                        mGamePlayPresenter.clickButton(GameColours.RED);
+                    }
+                }
+        ));
+
+
+        mLeftCircle.setOnTouchListener(new CircleTouchListener(
+                ResourceHelpers.createTransitionDrawable(this,
+                        R.drawable.oval_blue_empty, R.drawable.oval_blue_filled),
+                new CircleTouchListener.OnCircleTouch() {
+                    @Override
+                    public void onTouchDown() {
+
+                    }
+
+                    @Override
+                    public void onTouchUp() {
+                        mGamePlayPresenter.clickButton(GameColours.BLUE);
+                    }
+                }
+        ));
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mGamePlayPresenter = new GamePlayPresenterImpl(this);
+    }
 
     @Override
     protected void onPause() {
@@ -72,19 +107,127 @@ public class GameActivity extends BaseActivity implements GameView {
 
     @Override
     public void onGameOver(int level) {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        Fragment prev = getSupportFragmentManager().findFragmentByTag(GameOverFragment.TAG);
-        if (prev != null) {
-            ft.remove(prev);
-        }
-        ft.addToBackStack(null);
 
-        GameOverFragment newFragment = GameOverFragment.newInstance(level);
-        newFragment.show(ft, GameOverFragment.TAG);
+
+        Intent intent = new Intent(this, GameOverActivity.class);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+
+            List<Pair<View, String>> pairs = new ArrayList<>();
+            pairs.add(Pair.create((View) mRightCircle, getString(R.string.leaderboard_animation)));
+            ActivityOptions options = ActivityOptions
+                    .makeSceneTransitionAnimation(this, pairs.toArray(new Pair[pairs.size()]));
+            startActivity(intent, options.toBundle());
+        } else {
+            startActivity(intent);
+        }
+
+    }
+
+
+
+
+
+    @Override
+    public void displayLevel(int colour, int level) {
+        Toast.makeText(this, "You clicked the wrong colour..", Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void displayLevel(int level) {
+    public void displaySteps(List<Integer> colours) {
+        Timer t = new Timer();
+        long displayTime = 850;
+        long hideTime = 500;
+        long futureTime = displayTime;
+        t.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                hideBoth();
+            }
+        }, hideTime);
+        futureTime += hideTime;
+
+        for (int i = 0; i < colours.size(); i++) {
+            if(colours.get(i) == GameColours.RED) {
+
+                t.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        showRed();
+                    }
+                }, futureTime);
+                futureTime += displayTime;
+
+            } else if(colours.get(i) == GameColours.BLUE) {
+
+                t.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        showBlue();
+                    }
+                }, futureTime);
+                futureTime += displayTime;
+
+            }
+            if (i == colours.size() - 1) {
+                t.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        showBoth();
+                    }
+                }, futureTime);
+            } else {
+                t.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        hideBoth();
+                    }
+                }, futureTime);
+                futureTime += hideTime;
+            }
+        }
 
     }
+
+
+    private void showRed() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mLeftCircle.setVisibility(View.GONE);
+                mRightCircle.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    private void showBlue() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mLeftCircle.setVisibility(View.VISIBLE);
+                mRightCircle.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void hideBoth() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mLeftCircle.setVisibility(View.GONE);
+                mRightCircle.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void showBoth() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mLeftCircle.setVisibility(View.VISIBLE);
+                mRightCircle.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+
 }

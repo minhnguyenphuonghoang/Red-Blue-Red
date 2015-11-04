@@ -8,4 +8,10 @@
     <dimen name="square_spacing">8dp</dimen>
 
     <dimen name="level_text">30sp</dimen>
+
+    <dimen name="ic_size">36dp</dimen>
+
+    <dimen name="oval_stroke_width">5dp</dimen>
+    <dimen name="game_width">380dp</dimen>
+    <dimen name="game_height">675.5dp</dimen>
 </resources>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false">
+
+    <LinearLayout
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:clipChildren="false">
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:clipChildren="false">
+            <jordanterry.co.uk.redbluered.game.views.CircleView
+                android:id="@+id/left_circle"
+                android:clickable="true"
+                android:layout_width="@dimen/circle_diameter"
+                android:layout_height="@dimen/circle_diameter"
+                android:gravity="center"
+                android:transitionName="@string/play_animation"
+                android:background="@drawable/oval_blue_empty" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:clipChildren="false">
+
+            <jordanterry.co.uk.redbluered.game.views.CircleView
+                android:id="@+id/right_circle"
+                android:clickable="true"
+                android:layout_width="@dimen/circle_diameter"
+                android:layout_height="@dimen/circle_diameter"
+                android:gravity="center"
+                android:transitionName="@string/leaderboard_animation"
+                android:background="@drawable/oval_red_empty" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+    </LinearLayout>
+    
+</LinearLayout>

@@ -19,6 +19,6 @@
             android:gravity="center"
             android:clipChildren="false"
             android:transitionName="@string/play_animation"
-            android:background="@drawable/blue_border" />
+            android:background="@drawable/oval_blue_empty_play" />
     </LinearLayout>
 </LinearLayout>

@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -29,7 +31,7 @@ public class GameFragment extends Fragment implements GameView {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_game, container);
+        View view = inflater.inflate(R.layout.game_layout, container);
 
         mGamePlayPresenter = new GamePlayPresenterImpl(this);
         ButterKnife.bind(this, view);
@@ -51,7 +53,13 @@ public class GameFragment extends Fragment implements GameView {
     }
 
     @Override
-    public void displayLevel(int level) {
+    public void displayLevel(int colour, int level) {
 
     }
+
+    @Override
+    public void displaySteps(List<Integer> colours) {
+
+    }
+
 }

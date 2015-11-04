@@ -1,22 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-
     <item>
         <shape android:shape="oval">
             <solid
-                android:color="@color/blue" />
+                android:color="@color/red" />
             <stroke
-                android:color="@color/blue"
-                android:width="5dp" />
+                android:color="@color/red"
+                android:width="@dimen/oval_stroke_width" />
             <size
                 android:height="@dimen/circle_diameter"
                 android:width="@dimen/circle_diameter" />
         </shape>
     </item>
-    <item
-        android:drawable="@drawable/ic_play"
-        android:left="22dp"
-        android:right="22dp"
-        android:top="22dp"
-        android:bottom="22dp" />
 </layer-list>

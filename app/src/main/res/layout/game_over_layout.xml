@@ -1,0 +1,24 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:orientation="vertical">
+        <jordanterry.co.uk.redbluered.game.views.CircleView
+            android:id="@+id/replay_button"
+            android:layout_gravity="center"
+            android:clickable="true"
+            android:layout_width="@dimen/circle_diameter"
+            android:layout_height="@dimen/circle_diameter"
+            android:gravity="center"
+            android:clipChildren="false"
+            android:transitionName="@string/leaderboard_animation"
+            android:background="@drawable/oval_blue_empty_replay" />
+    </LinearLayout>
+</LinearLayout>

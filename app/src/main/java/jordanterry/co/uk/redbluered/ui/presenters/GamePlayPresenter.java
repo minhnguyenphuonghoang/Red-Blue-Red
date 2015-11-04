@@ -8,6 +8,8 @@ public interface GamePlayPresenter {
 
     void clickButton(int colour);
 
+    void addNewLevel();
 
+    void keepPlaying();
 
 }
