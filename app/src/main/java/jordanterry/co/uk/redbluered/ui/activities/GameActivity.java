@@ -55,6 +55,7 @@ public class GameActivity extends BaseActivity implements GameView {
         ButterKnife.bind(this);
 
         mHandler = new Handler();
+        mGamePlayPresenter = new GamePlayPresenterImpl(this);
 
         mRightCircle.setOnTouchListener(new CircleTouchListener(
                 ResourceHelpers.createTransitionDrawable(this,
@@ -93,7 +94,7 @@ public class GameActivity extends BaseActivity implements GameView {
     @Override
     protected void onResume() {
         super.onResume();
-        mGamePlayPresenter = new GamePlayPresenterImpl(this);
+        mGamePlayPresenter.onResume();
     }
 
     @Override

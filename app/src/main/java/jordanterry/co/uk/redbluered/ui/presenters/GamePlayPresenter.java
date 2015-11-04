@@ -12,4 +12,7 @@ public interface GamePlayPresenter {
 
     void keepPlaying();
 
+    void onResume();
+
+    void onPause();
 }

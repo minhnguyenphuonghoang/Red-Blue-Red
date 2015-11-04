@@ -13,10 +13,11 @@ public class GamePlayPresenterImpl implements GamePlayPresenter {
 
     private GameStatusController mGameStatusController;
 
+    private boolean isStarted = false;
+
     public GamePlayPresenterImpl(GameView gameView) {
         mGameStatusController = new GameStatusController();
         mGameView = gameView;
-        addNewLevel();
     }
 
     @Override
@@ -46,6 +47,19 @@ public class GamePlayPresenterImpl implements GamePlayPresenter {
 
     @Override
     public void keepPlaying() {
+
+    }
+
+    @Override
+    public void onResume() {
+        if(!isStarted) {
+            addNewLevel();
+            isStarted = true;
+        }
+    }
+
+    @Override
+    public void onPause() {
 
     }
 
