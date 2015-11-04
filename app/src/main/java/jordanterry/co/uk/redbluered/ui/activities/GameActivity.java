@@ -54,7 +54,6 @@ public class GameActivity extends BaseActivity implements GameView {
         setContentView(R.layout.activity_game);
         ButterKnife.bind(this);
 
-
         mHandler = new Handler();
 
         mRightCircle.setOnTouchListener(new CircleTouchListener(
@@ -91,7 +90,6 @@ public class GameActivity extends BaseActivity implements GameView {
         ));
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -99,21 +97,12 @@ public class GameActivity extends BaseActivity implements GameView {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-
-    }
-
-
-    @Override
     public void onGameOver(int level) {
-
 
         Intent intent = new Intent(this, GameOverActivity.class);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-
             List<Pair<View, String>> pairs = new ArrayList<>();
-            pairs.add(Pair.create((View) mRightCircle, getString(R.string.leaderboard_animation)));
+            pairs.add(Pair.create((View) mRightCircle, getString(R.string.play_animation)));
             ActivityOptions options = ActivityOptions
                     .makeSceneTransitionAnimation(this, pairs.toArray(new Pair[pairs.size()]));
             startActivity(intent, options.toBundle());

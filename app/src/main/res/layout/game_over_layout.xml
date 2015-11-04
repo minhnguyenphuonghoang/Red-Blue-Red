@@ -18,7 +18,7 @@
             android:layout_height="@dimen/circle_diameter"
             android:gravity="center"
             android:clipChildren="false"
-            android:transitionName="@string/leaderboard_animation"
+            android:transitionName="@string/play_animation"
             android:background="@drawable/oval_blue_empty_replay" />
     </LinearLayout>
 </LinearLayout>

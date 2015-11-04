@@ -37,7 +37,7 @@ public class GameOverActivity extends BaseActivity {
 
                     @Override
                     public void onTouchUp() {
-                        finish();
+                        onBackPressed();
                     }
                 }
         ));
