@@ -183,8 +183,12 @@ public class GameActivity extends BaseActivity implements GameView {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mLeftCircle.setVisibility(View.GONE);
-                mRightCircle.setVisibility(View.VISIBLE);
+                mLeftCircle.hide();
+                if(mRightCircle.isHidden()) {
+                    mRightCircle.show();
+                } else {
+                    mRightCircle.hideAndShow();
+                }
             }
         });
     }
@@ -193,8 +197,12 @@ public class GameActivity extends BaseActivity implements GameView {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mLeftCircle.setVisibility(View.VISIBLE);
-                mRightCircle.setVisibility(View.GONE);
+                mRightCircle.hide();
+                if(mLeftCircle.isHidden()) {
+                    mLeftCircle.show();
+                } else {
+                    mLeftCircle.hideAndShow();
+                }
             }
         });
     }
@@ -203,8 +211,12 @@ public class GameActivity extends BaseActivity implements GameView {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mLeftCircle.setVisibility(View.GONE);
-                mRightCircle.setVisibility(View.GONE);
+                if(!mLeftCircle.isHidden()) {
+                    mLeftCircle.hide();
+                }
+                if(!mRightCircle.isHidden()) {
+                    mRightCircle.hide();
+                }
             }
         });
     }
@@ -213,8 +225,12 @@ public class GameActivity extends BaseActivity implements GameView {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mLeftCircle.setVisibility(View.VISIBLE);
-                mRightCircle.setVisibility(View.VISIBLE);
+                if(mLeftCircle.isHidden()) {
+                    mLeftCircle.show();
+                }
+                if(mRightCircle.isHidden()) {
+                    mRightCircle.show();
+                }
             }
         });
     }

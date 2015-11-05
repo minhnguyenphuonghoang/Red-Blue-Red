@@ -30,7 +30,7 @@
                 android:layout_width="@dimen/circle_diameter"
                 android:layout_height="@dimen/circle_diameter"
                 android:gravity="center"
-                android:transitionName="@string/play_animation"
+                android:transitionName="@string/leaderboard_animation"
                 android:background="@drawable/oval_blue_empty" />
         </LinearLayout>
         <LinearLayout

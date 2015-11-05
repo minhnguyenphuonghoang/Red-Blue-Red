@@ -28,7 +28,7 @@ public class GameOverActivity extends BaseActivity {
 
         mReplayButton.setOnTouchListener(new CircleTouchListener(
                 ResourceHelpers.createTransitionDrawable(this,
-                        R.drawable.oval_red_empty, R.drawable.oval_red_filled),
+                        R.drawable.oval_red_empty_replay, R.drawable.oval_red_filled_replay),
                 new CircleTouchListener.OnCircleTouch() {
                     @Override
                     public void onTouchDown() {

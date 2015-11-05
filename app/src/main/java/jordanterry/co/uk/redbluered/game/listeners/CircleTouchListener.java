@@ -23,12 +23,15 @@ public class CircleTouchListener implements View.OnTouchListener {
 
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                view.setBackground(mTransitionDrawable);
-                mTransitionDrawable.startTransition(200);
+            //    view.setBackground(mTransitionDrawable);
+              //  mTransitionDrawable.startTransition(200);
+                view.animate().scaleX(.87f).scaleY(.87f).setDuration(100);
                 mOnCircleTouch.onTouchDown();
                 return true;
             case MotionEvent.ACTION_UP:
-                mTransitionDrawable.reverseTransition(400);
+    //                mTransitionDrawable.reverseTransition(400);
+                view.animate().scaleX(1).scaleY(1).setDuration(150);
+
                 mOnCircleTouch.onTouchUp();
                 return true;
         }
