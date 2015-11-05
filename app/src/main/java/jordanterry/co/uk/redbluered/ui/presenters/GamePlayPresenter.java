@@ -15,4 +15,6 @@ public interface GamePlayPresenter {
     void onResume();
 
     void onPause();
+
+    void reset();
 }

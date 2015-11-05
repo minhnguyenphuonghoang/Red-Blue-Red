@@ -63,4 +63,13 @@ public class GamePlayPresenterImpl implements GamePlayPresenter {
 
     }
 
+    @Override
+    public void reset() {
+        mGameStatusController.resetUserClicks();
+        mGameStatusController.resetGameSteps();
+        mGameStatusController.resetLevel();
+        addNewLevel();
+        isStarted = true;
+    }
+
 }

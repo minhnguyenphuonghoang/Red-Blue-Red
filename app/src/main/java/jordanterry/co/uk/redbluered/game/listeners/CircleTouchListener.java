@@ -4,6 +4,8 @@ import android.graphics.drawable.TransitionDrawable;
 import android.view.MotionEvent;
 import android.view.View;
 
+import jordanterry.co.uk.redbluered.game.views.CircleView;
+
 /**
  * Created by jordanterry on 03/11/15.
  */
@@ -20,18 +22,14 @@ public class CircleTouchListener implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-
+        CircleView circleView = (CircleView) view;
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
-            //    view.setBackground(mTransitionDrawable);
-              //  mTransitionDrawable.startTransition(200);
-                view.animate().scaleX(.87f).scaleY(.87f).setDuration(100);
+                circleView.tapDown();
                 mOnCircleTouch.onTouchDown();
                 return true;
             case MotionEvent.ACTION_UP:
-    //                mTransitionDrawable.reverseTransition(400);
-                view.animate().scaleX(1).scaleY(1).setDuration(150);
-
+                circleView.tapUp();
                 mOnCircleTouch.onTouchUp();
                 return true;
         }

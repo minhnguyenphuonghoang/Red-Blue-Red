@@ -7,7 +7,6 @@ import android.util.Pair;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,19 +54,6 @@ public class MenuActivity extends BaseActivity {
     }
 
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == GameActivity.REQUEST_CODE) {
-            if(resultCode == GameActivity.RESULT_MAIN_MENU) {
-                Toast.makeText(this, "Better luck next time.", Toast.LENGTH_SHORT).show();
-            } else if(resultCode == GameActivity.RESULT_LEADERBOARDS) {
-                Toast.makeText(this, "Leaderboards will go here.", Toast.LENGTH_SHORT).show();
-            } else if(resultCode == GameActivity.RESULT_GAME_RESTART) {
-                startGame();
-            }
-        }
-    }
 
 
     private void startGame() {

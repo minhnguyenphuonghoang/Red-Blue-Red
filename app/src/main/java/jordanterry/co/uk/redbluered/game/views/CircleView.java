@@ -52,4 +52,12 @@ public class CircleView extends LinearLayout {
     public boolean isHidden() {
         return isHidden;
     }
+
+    public void tapDown() {
+        animate().scaleY(.8f).scaleX(.8f).setInterpolator(new AccelerateDecelerateInterpolator()).setDuration(75);
+    }
+
+    public void tapUp() {
+        animate().scaleY(1).scaleX(1).setInterpolator(new AccelerateDecelerateInterpolator()).setDuration(50);
+    }
 }

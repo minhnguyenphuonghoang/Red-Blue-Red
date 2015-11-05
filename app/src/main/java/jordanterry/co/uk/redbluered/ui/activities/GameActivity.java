@@ -31,13 +31,7 @@ public class GameActivity extends BaseActivity implements GameView {
 
     public static final String TAG = GameActivity.class.getSimpleName();
 
-    public static int REQUEST_CODE = 1;
-
-    public static int RESULT_MAIN_MENU = 2;
-
-    public static int RESULT_GAME_RESTART = 3;
-
-    public static int RESULT_LEADERBOARDS = 4;
+    public static int GAME_OVER_SCREEN = 100;
 
 
     @Bind(R.id.left_circle) CircleView mLeftCircle;
@@ -106,9 +100,9 @@ public class GameActivity extends BaseActivity implements GameView {
             pairs.add(Pair.create((View) mRightCircle, getString(R.string.play_animation)));
             ActivityOptions options = ActivityOptions
                     .makeSceneTransitionAnimation(this, pairs.toArray(new Pair[pairs.size()]));
-            startActivity(intent, options.toBundle());
+            startActivityForResult(intent, GAME_OVER_SCREEN, options.toBundle());
         } else {
-            startActivity(intent);
+            startActivityForResult(intent, GAME_OVER_SCREEN);
         }
 
     }
@@ -178,6 +172,13 @@ public class GameActivity extends BaseActivity implements GameView {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == GAME_OVER_SCREEN) {
+            mGamePlayPresenter.reset();
+        }
+    }
 
     private void showRed() {
         runOnUiThread(new Runnable() {

@@ -1,5 +1,6 @@
 package jordanterry.co.uk.redbluered.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import butterknife.Bind;
@@ -16,6 +17,8 @@ public class GameOverActivity extends BaseActivity {
 
     public static final String TAG = GameOverActivity.class.getSimpleName();
 
+
+    public static int RESTART_GAME = 10001;
 
     @Bind(R.id.replay_button) CircleView mReplayButton;
 
@@ -37,11 +40,16 @@ public class GameOverActivity extends BaseActivity {
 
                     @Override
                     public void onTouchUp() {
-                        onBackPressed();
+
+                        Intent intent = new Intent();
+                        Bundle bundle = new Bundle();
+                        intent.putExtras(bundle);
+                        setResult(RESULT_OK, intent);
+
+                        finish();
                     }
                 }
         ));
-
 
     }
 

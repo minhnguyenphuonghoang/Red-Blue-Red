@@ -55,4 +55,12 @@ public class GameStatusController {
         mStepColours = new ArrayList<>();
     }
 
+    public void resetGameSteps() {
+        mGameColours = new ArrayList<>();
+    }
+
+    public void resetLevel() {
+        mLevel = 0;
+    }
+
 }
