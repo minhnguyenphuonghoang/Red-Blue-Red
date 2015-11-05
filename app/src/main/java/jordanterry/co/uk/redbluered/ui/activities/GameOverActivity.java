@@ -8,7 +8,6 @@ import butterknife.ButterKnife;
 import jordanterry.co.uk.redbluered.R;
 import jordanterry.co.uk.redbluered.game.listeners.CircleTouchListener;
 import jordanterry.co.uk.redbluered.game.views.CircleView;
-import jordanterry.co.uk.redbluered.helpers.ResourceHelpers;
 
 /**
  * Created by jordanterry on 14/10/15.
@@ -17,11 +16,7 @@ public class GameOverActivity extends BaseActivity {
 
     public static final String TAG = GameOverActivity.class.getSimpleName();
 
-
-    public static int RESTART_GAME = 10001;
-
     @Bind(R.id.replay_button) CircleView mReplayButton;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +25,6 @@ public class GameOverActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         mReplayButton.setOnTouchListener(new CircleTouchListener(
-                ResourceHelpers.createTransitionDrawable(this,
-                        R.drawable.oval_red_empty_replay, R.drawable.oval_red_filled_replay),
                 new CircleTouchListener.OnCircleTouch() {
                     @Override
                     public void onTouchDown() {
@@ -41,12 +34,19 @@ public class GameOverActivity extends BaseActivity {
                     @Override
                     public void onTouchUp() {
 
-                        Intent intent = new Intent();
-                        Bundle bundle = new Bundle();
-                        intent.putExtras(bundle);
-                        setResult(RESULT_OK, intent);
+                        mReplayButton.hide(new CircleView.OnAnimationListener() {
+                            @Override
+                            public void onComplete() {
 
-                        finish();
+                                Intent intent = new Intent();
+                                Bundle bundle = new Bundle();
+                                intent.putExtras(bundle);
+                                setResult(RESULT_OK, intent);
+                                finish();
+                                overridePendingTransition(0, 0);
+                            }
+                        });
+
                     }
                 }
         ));

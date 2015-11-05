@@ -16,7 +16,6 @@ import butterknife.ButterKnife;
 import jordanterry.co.uk.redbluered.R;
 import jordanterry.co.uk.redbluered.game.listeners.CircleTouchListener;
 import jordanterry.co.uk.redbluered.game.views.CircleView;
-import jordanterry.co.uk.redbluered.helpers.ResourceHelpers;
 
 /**
  * <p>The MenuActivity is the first Activity the user will visit.</p>
@@ -37,8 +36,6 @@ public class MenuActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         mPlayButton.setOnTouchListener(new CircleTouchListener(
-                ResourceHelpers.createTransitionDrawable(MenuActivity.this,
-                        R.drawable.oval_blue_empty_play, R.drawable.oval_blue_filled_play),
                 new CircleTouchListener.OnCircleTouch() {
                     @Override
                     public void onTouchDown() {
@@ -65,7 +62,6 @@ public class MenuActivity extends BaseActivity {
             View navigationBar = findViewById(android.R.id.navigationBarBackground);
             pairs.add(Pair.create(statusBar, Window.STATUS_BAR_BACKGROUND_TRANSITION_NAME));
             pairs.add(Pair.create(navigationBar, Window.NAVIGATION_BAR_BACKGROUND_TRANSITION_NAME));
-            pairs.add(Pair.create((View) mPlayButton, getString(R.string.play_animation)));
             ActivityOptions options = ActivityOptions
                     .makeSceneTransitionAnimation(this, pairs.toArray(new Pair[pairs.size()]));
             startActivity(intent, options.toBundle());

@@ -27,6 +27,7 @@
             <jordanterry.co.uk.redbluered.game.views.CircleView
                 android:id="@+id/left_circle"
                 android:clickable="true"
+                android:visibility="gone"
                 android:layout_width="@dimen/circle_diameter"
                 android:layout_height="@dimen/circle_diameter"
                 android:gravity="center"
@@ -43,6 +44,7 @@
             <jordanterry.co.uk.redbluered.game.views.CircleView
                 android:id="@+id/right_circle"
                 android:clickable="true"
+                android:visibility="gone"
                 android:layout_width="@dimen/circle_diameter"
                 android:layout_height="@dimen/circle_diameter"
                 android:gravity="center"

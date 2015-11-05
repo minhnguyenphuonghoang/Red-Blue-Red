@@ -1,6 +1,5 @@
 package jordanterry.co.uk.redbluered.game.listeners;
 
-import android.graphics.drawable.TransitionDrawable;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -11,12 +10,10 @@ import jordanterry.co.uk.redbluered.game.views.CircleView;
  */
 public class CircleTouchListener implements View.OnTouchListener {
 
-    private TransitionDrawable mTransitionDrawable;
     private OnCircleTouch mOnCircleTouch;
 
 
-    public CircleTouchListener(TransitionDrawable transitionDrawable, OnCircleTouch onCircleTouch) {
-        mTransitionDrawable = transitionDrawable;
+    public CircleTouchListener(OnCircleTouch onCircleTouch) {
         mOnCircleTouch = onCircleTouch;
     }
 

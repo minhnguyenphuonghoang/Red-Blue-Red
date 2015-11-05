@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Pair;
 import android.view.View;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +18,6 @@ import jordanterry.co.uk.redbluered.R;
 import jordanterry.co.uk.redbluered.game.GameColours;
 import jordanterry.co.uk.redbluered.game.listeners.CircleTouchListener;
 import jordanterry.co.uk.redbluered.game.views.CircleView;
-import jordanterry.co.uk.redbluered.helpers.ResourceHelpers;
 import jordanterry.co.uk.redbluered.ui.presenters.GamePlayPresenter;
 import jordanterry.co.uk.redbluered.ui.presenters.GamePlayPresenterImpl;
 import jordanterry.co.uk.redbluered.ui.views.GameView;
@@ -52,8 +50,6 @@ public class GameActivity extends BaseActivity implements GameView {
         mGamePlayPresenter = new GamePlayPresenterImpl(this);
 
         mRightCircle.setOnTouchListener(new CircleTouchListener(
-                ResourceHelpers.createTransitionDrawable(this,
-                        R.drawable.oval_red_empty, R.drawable.oval_red_filled),
                 new CircleTouchListener.OnCircleTouch() {
                     @Override
                     public void onTouchDown() {
@@ -69,8 +65,6 @@ public class GameActivity extends BaseActivity implements GameView {
 
 
         mLeftCircle.setOnTouchListener(new CircleTouchListener(
-                ResourceHelpers.createTransitionDrawable(this,
-                        R.drawable.oval_blue_empty, R.drawable.oval_blue_filled),
                 new CircleTouchListener.OnCircleTouch() {
                     @Override
                     public void onTouchDown() {
@@ -113,15 +107,22 @@ public class GameActivity extends BaseActivity implements GameView {
 
     @Override
     public void displayLevel(int colour, int level) {
-        Toast.makeText(this, "You clicked the wrong colour..", Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
     public void displaySteps(List<Integer> colours) {
         Timer t = new Timer();
         long displayTime = 850;
-        long hideTime = 500;
+        long hideTime = 250;
         long futureTime = displayTime;
+        mLeftCircle.setScaleX(0);
+        mLeftCircle.setScaleY(0);
+        mLeftCircle.setVisibility(View.VISIBLE);
+        mRightCircle.setScaleX(0);
+        mRightCircle.setScaleY(0);
+        mRightCircle.setVisibility(View.VISIBLE);
+
         t.schedule(new TimerTask() {
             @Override
             public void run() {
